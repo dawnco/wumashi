@@ -11,11 +11,11 @@
             #leftside, #container, #splitBar, #splitBarProxy{ top:50px}
         </style>
 
-        <script src="<?php echo static_url('js/jquery.js'); ?>" type="text/javascript"></script>
+        <script src="<?php echo static_url('script/jquery.js'); ?>" type="text/javascript"></script>
 
-        <script src="<?php echo static_url('js/jquery.cookie.js'); ?>" type="text/javascript"></script>
-        <script src="<?php echo static_url('js/jquery.validate.js'); ?>" type="text/javascript"></script>
-        <script src="<?php echo static_url('js/jquery.bgiframe.js'); ?>" type="text/javascript"></script>
+        <script src="<?php echo static_url('script/jquery.cookie.js'); ?>" type="text/javascript"></script>
+        <script src="<?php echo static_url('script/jquery.validate.js'); ?>" type="text/javascript"></script>
+        <script src="<?php echo static_url('script/jquery.bgiframe.js'); ?>" type="text/javascript"></script>
 
 
         <script src="<?php echo static_url('dwz/js/dwz.js'); ?>" type="text/javascript"></script>
@@ -24,7 +24,7 @@
         <script src="<?php echo static_url('dwz/xheditor/xheditor-1.2.1.min.js'); ?>" type="text/javascript"></script>
         <script src="<?php echo static_url('dwz/xheditor/xheditor_lang/zh-cn.js'); ?>" type="text/javascript"></script>
         <script src="<?php echo static_url('dwz/js/dwz.regional.zh.js'); ?>" type="text/javascript"></script>
-        <script src="<?php echo static_url('debug/js.js'); ?>" type="text/javascript"></script>
+        <script src="<?php echo static_url('script/debug.js'); ?>" type="text/javascript"></script>
         <script type="text/javascript">
 
                     $(function() {
