@@ -2,80 +2,64 @@
 
 /**
  *
- * @author WuMaShi.com
+ * @author Dawnc <abke@qq.com>
  */
 
-
-/**
- * 读取配置信息
- * @param string $key[, ... string $key]
- * @return mixed 
- */
-function conf() {
-	$parameter = func_get_args();
-	return __get_var( $GLOBALS, $parameter );
+function input($key){
+    return isset($_POST[$key]) ? $_POST[$key] :
+        (isset($_GET[$key]) ? $_GET[$key] : false );
 }
 
 /**
- * 无限获取数组key
- * @param $data
- * @param array $keys
+ * 是否ajax请求
+ * @return boolean
  */
-function __get_var( &$data, array $keys ) {
-    if( empty( $keys ) ) {
-        return $data;
-    }
-    $key = array_shift( $keys );
-    // $key不存在
-    if( ! isset( $data[$key] ) ) {
-        return null;
-    }
-    // 到达最底层
-    if( empty( $keys ) ) {
-        return isset( $data[$key] ) ? $data[$key] : null;
-    }
-    return __get_var( $data[$key], $keys );
-}
-
-/**
- * 引入model
- * @param type $model
- */
-function minclude($model, $m = "p"){
-    if($m == "p"){
-        require ROOT . "model/" .$model . "Model.php";
+function is_ajax(){
+    if(isset($_SERVER["HTTP_X_REQUESTED_WITH"]) && strtolower($_SERVER["HTTP_X_REQUESTED_WITH"])=="xmlhttprequest"){
+        return true;
     }else{
-        require APP_PATH . "model/" .$model . "Model.php";
+        return false;
     }
 }
-
 
 function show_404($str) {
-    if(ENV == "dev"){
-        echo $str . "<br>";
+
+    if(ENV == "development"){
+        $message = $str ;
+    }else{
+        $message = "";
     }
-    echo "page not found";
+
+    if(is_ajax()){
+        echo json_encode(array("status" => "error", "message" => "页面不存在 " . $message));
+        exit;
+    }
+
+    echo $message;
+    echo "<br>page not found";
     exit;
 }
 
-
 function site_url($uri){
-    return conf('app','base_url') . $uri;
+    return Conf::get('app', 'base_url') . $uri;
 }
 
-function static_url($uri){
-    return conf('app','site') . "static/" . $uri . "?v=" . conf('app','version');
+/**
+ * 静态资源
+ * @param type $uri
+ * @param type $base  默认  app
+ *                      app 应用资讯
+ *                      common  公共资源
+ * @return type
+ */
+function static_url($uri , $base = "app"){
+    if($base == "app"){
+        $conf = "app_static_url";
+    }elseif($base == "common"){
+        $conf = "com_static_url";
+    }
+    return Conf::get('app', $conf) . $uri . "?v=" . Conf::get('app','version');
 }
-
-
-function str_clear($str){
-    return $str;
-}
-
-function str_clean($str){
-    return $str;
-}
-
 
 function get_client_ip() {
     if (isset($_SERVER)) {
@@ -112,7 +96,34 @@ function get_client_ip() {
 }
 
 
+/**
+ * 跳转
+ * @param type $uri
+ */
 function redirect($uri = ""){
     header("Location: " . site_url($uri));
     exit;
+}
+
+/**
+ * 数组变成一个树
+ * @param type $items
+ * @param boolean $format $items 是否是  格式话好的二维数组数据 数组的一维key为 id值
+ * @return type
+ */
+function convert2tree($items, $format = false) {
+
+    if (!$format) {
+        $tmp = array();
+        foreach ($items as $vo) {
+            $tmp[$vo['id']] = $vo;
+        }
+        $items = $tmp;
+
+    }
+
+    foreach ($items as $item) {
+        $items[$item['pid']]['child'][$item['id']] = &$items[$item['id']];
+    }
+    return isset($items[0]['child']) ? $items[0]['child'] : array();
 }

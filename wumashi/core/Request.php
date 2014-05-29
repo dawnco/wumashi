@@ -1,9 +1,9 @@
 <?php
 
 /**
- * @author: 五马石 <abke@qq.com> 
+ * @author: 五马石 <abke@qq.com>
  * Time: 2013-8-11
- * Description: 
+ * Description:
  */
 
 class Request {
@@ -11,11 +11,11 @@ class Request {
     public $post, $get, $request, $cookie, $context;
 
     function __construct() {
-        $this->post = $_POST;
-        $this->get = $_GET;
-        $this->request = $_REQUEST;
-        $this->cookie = $_COOKIE;
-        $this->context = array();
+        $this->post     = $_POST;
+        $this->get      = $_GET;
+        $this->request  = $_REQUEST;
+        $this->cookie   = $_COOKIE;
+        $this->context  = array();
     }
 
 }

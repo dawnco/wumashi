@@ -1,15 +1,20 @@
 <?php
 
 /**
- * @author: 五马石 <abke@qq.com> 
+ * @author: 五马石 <abke@qq.com>
  * Time: 2013-8-11
- * Description: 
+ * Description:
  */
 class View {
 
     private static $__data = array();
 
-    static function assign($key, $val = null) {
+    /**
+     * 赋值模板
+     * @param type $key
+     * @param type $val
+     */
+    public static function assign($key, $val = null) {
         if (is_array($key)) {
             self::$__data = array_merge(self::$__data, $key);
         } elseif ($val) {
@@ -18,12 +23,12 @@ class View {
     }
 
     /**
-     * 合并或者增加val 到 $key中 
+     * 合并或者增加val 到 $key中
      * @param string $key
      * @param mix $val  数组或者字符串
      * @param type $signal false  合并 $val 到 $key 中,  true 增加 val 到 $key中
      */
-    static function addValue($key, $val = '', $signal = false) {
+    public static function addValue($key, $val = '', $signal = false) {
         if (is_string($val) || $signal) {
             self::$__data[$key][] = $val;
         } elseif (is_array($val)) {
@@ -31,38 +36,60 @@ class View {
         }
     }
 
-    static function getData() {
+    public static function getData() {
         return self::$__data;
     }
 
-    static function render($tpl = '', $data = array()) {
+    /**
+     * 输出模板
+     * @param type $tpl
+     * @param type $data
+     */
+    public static function render($tpl = '', $data = array()) {
         echo self::fetch($tpl, $data);
     }
 
-    static function fetch($tpl = '', $data = array()) {
-        $data = array_merge($data, self::$__data);
+    /**
+     * 输出layout模板
+     * @param type $tpl
+     * @param array $data
+     * @param type $layout
+     */
+    public static function layout($tpl = "", $data = array(), $layout = "layout"){
+         $data['tpl'] = $tpl;
+         self::render($layout, $data);
+    }
+
+    /**
+     * 渲染模板
+     * @param type $tpl 模板文件
+     * @param type $data 数据
+     * @return type
+     */
+    public static function fetch($tpl = '', $data = array()) {
+        self::$__data = array_merge($data, self::$__data);
+
+        $template_file = APP_PATH . "view/$tpl.tpl.php";
+
         if (self::$__data) {
             extract(self::$__data);
         }
         ob_start();
-        include APP_PATH . "template/$tpl.tpl.php";
+        include $template_file;
         $content = ob_get_contents();
         ob_end_clean();
+
         return $content;
     }
 
     /**
-     * 返回json格式字符串 如果没有验证通过则会设置status为error message为错误信息
-     * @param type $data
-     * @param type $callback
-     * @return type
+     * 数据json数据
+     * @param type $data 数据
+     * @param type $callback 回调函数
      */
-    static function json($data, $callback = "") {
-        if (self::$__data['__error']) {
-            $data['status'] = 'error';
-            $data['message'] = array_pop(self::$__data['__error']);//显示一条错误信息
-        }
-        return $callback ? $callback . "(" . json_encode($data) . ")" : json_encode($data);
+    public static function outJson($data, $callback = ""){
+        echo $callback ? $callback . "(" . json_encode($data) . ")" : json_encode($data);;
     }
+
 
 }
