@@ -1,0 +1,20 @@
+/* 
+    Created on : 2014-5-2, 19:12:36
+    Author     : Dawnc <abke@qq.com>
+*/
+
+/* RESET */
+/*html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,dl,dt,dd,ol,ul,li,fieldset,form,label,legend{border:0;outline:0;vertical-align:baseline;background:transparent;margin:0;padding:0;}
+
+ COMMON 
+.clear{clear: both;height: 0;font-size: 0;}
+.hide{display: none;height: 0}*/
+
+.wms-header {
+    margin-top: 70px;
+}
+
+.pagination {}
+.pagination a,.pagination span{display: inline-block;padding: 5px;border: 1px solid #ccc;width: 24px;text-align: center}
+.pagination a{text-decoration: none;text-align: center}
+.pagination .active{font-weight: bold; }
