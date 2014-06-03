@@ -12,17 +12,18 @@ class Route {
             $__param    = array(),
             $__uri      = null,
             $__controlFile = "";
-
-    static  $uri        = "";
     
-    public function __construct($uri = ''){
+    
+    public function __construct($uri = ""){
+        $this->__uri = $uri;
+    }
 
-        $this->__uri = trim($uri," /");
-
+    /**
+     * 执行路由
+     */
+    public function run() {
         $routed = false;
         $rules  = Conf::get("url");
-        
-        self::$uri = $this->__uri;
         
         //默认
         if($this->__uri == ''){
@@ -48,7 +49,13 @@ class Route {
         }
 
         if(!$routed){
-            show_404("not route");
+            
+            if(ENV == 'development'){
+                show_404("not route" . var_export($this, true));
+            }else{
+                show_404("not route");
+            }
+            
         }
 
         //默认路由
@@ -59,7 +66,7 @@ class Route {
 //           $this->__param           = array_slice($info, 2);
 //        }
     }
-
+    
     /**
      * 解析uri
      * @param type $rule
@@ -80,6 +87,11 @@ class Route {
         $this->__param      = $prarm;
     }
 
+    
+    public function setUri($uri) {
+        $this->__uri = $uri;
+    }
+    
     public function getGroup(){
         return $this->__group;
     }

@@ -8,14 +8,14 @@
  */
 class Hook {
 
-    private $__hooks = null, $__route, $___hook_class;
+    private $__hooks = null, $__request, $___hook_class;
 
     /**
      *
      * @param Route $route
      */
-    public function __construct($route){
-        $this->__route = $route;
+    public function __construct($request){
+        $this->__request = $request;
     }
     /**
      * 加载钩子
@@ -25,7 +25,7 @@ class Hook {
         $hooks = Conf::get("hook");
 
         foreach ($hooks as $preg => $hook) {
-            if (preg_match("#^$preg$#i", $this->__route->getUri())) {
+            if (preg_match("#^$preg$#i", $this->__request->getUri())) {
                 $this->__hooks[$hook['weld']][] = $hook;
             }
         }
@@ -47,10 +47,10 @@ class Hook {
             $hook_class_name    = $hook['h'] . "Hook";
             $method             = isset($hook['m']) ? $hook['m'] : "hook";
             if (!isset($this->___hook_class[$hook_class_name])) {
-                $this->___hook_class[$hook_class_name] = new $hook_class_name($this->__route);
+                $this->___hook_class[$hook_class_name] = new $hook_class_name($this->__request);
             }
             //执行
-            call_user_func_array(array($this->___hook_class[$hook_class_name], $method), $this->__route->getParam());
+            call_user_func_array(array($this->___hook_class[$hook_class_name], $method), $this->__request->getParam());
 
         }
     }

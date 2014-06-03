@@ -9,47 +9,27 @@
 
 class Dispatcher {
 
-    protected $_request, $_hook, $_route;
+    protected $_request, $_hook;
 
-    function __construct($request) {
+    function __construct(Request $request) {
         $this->_request = $request;
+        
+        $this->_hook  = new Hook($this->_request);
+        $this->_hook->load();
+
+        
     }
 
     /**
      * 执行
      */
     function run() {
-
-        if (isset($this->_request->get['s'])) {
-            $uri = $this->_request->get['s'];
-        } elseif(isset($_SERVER['PATH_INFO'])) {
-            $uri = $_SERVER['PATH_INFO'];
-        } elseif(isset($_SERVER['REDIRECT_SCRIPT_URL'])) {
-            $uri =   $_SERVER['REDIRECT_SCRIPT_URL'];
-        }elseif(isset($_SERVER['REDIRECT_URL'])){
-            $uri = $_SERVER['REDIRECT_URL'];
-
-        }else{
-            $uri = "";
-        }
-
-
-        $uri = trim($uri, " /");
-
-        $this->_route = new Route($uri);
-
-        $this->_hook  = new Hook($this->_route);
-        $this->_hook->load();
-
-        $control        = $this->_route->getControl();
-        $controlFile    = $this->_route->getControlFile();
-        $method         = $this->_route->getMethod();
-        $param          = $this->_route->getParam();
-
-        $this->_request->context['control'] = $control;
-        $this->_request->context['method']  = $method;
-        $this->_request->context['param']   = $param;
-
+       
+        $controlFile = $this->_request->getControlFile();
+        $control     = $this->_request->getControl();
+        $method      = $this->_request->getMethod();
+        $param       = $this->_request->getParam();
+        
         $this->_hook->trigger("pre_control");
 
         $controlFile = APP_PATH . "control/" .$controlFile . "Control.php";
@@ -58,7 +38,7 @@ class Dispatcher {
             $controlCls = $control ."Control";
             $classInstance = new $controlCls($this->_request);
             if (method_exists($classInstance, $method)) {
-                call_user_func_array(array($classInstance, $method), $this->_request->context['param']);
+                call_user_func_array(array($classInstance, $method), $param);
             } else {
                 show_404($control . "->". $method ."() Method Not Found");
             }

@@ -40,5 +40,5 @@ if(Conf::get("app", "session_autostart") !== false){
     Session::instance();
 }
 
-$dispatcher = new Dispatcher(new Request());
+$dispatcher = new Dispatcher(new Request(new Route()));
 $dispatcher->run();
