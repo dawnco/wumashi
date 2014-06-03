@@ -13,16 +13,17 @@ class Route {
             $__uri      = null,
             $__controlFile = "";
 
+    static  $uri        = "";
+    
     public function __construct($uri = ''){
 
         $this->__uri = trim($uri," /");
 
-
-
         $routed = false;
         $rules  = Conf::get("url");
-
-
+        
+        self::$uri = $this->__uri;
+        
         //默认
         if($this->__uri == ''){
             $this->__controlFile = "Default";
@@ -39,7 +40,6 @@ class Route {
             }
         }
 
-
         $has_sp = strrpos($this->__controlFile, "/");
         if ($has_sp === false) {
             $this->__control = $this->__controlFile;
@@ -50,7 +50,6 @@ class Route {
         if(!$routed){
             show_404("not route");
         }
-
 
         //默认路由
 //        if(!$routed){
