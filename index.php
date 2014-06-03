@@ -1,6 +1,6 @@
 <?php
-
+// example
 define('ENV' , "development");
-define('CORE_PATH', dirname(__FILE__) . "/wumashi/"); //¿ò¼ÜÂ·¾¶
-define('APP_PATH', dirname(__FILE__) . "/blog/"); //ÏîÄ¿Â·¾¶
+define('CORE_PATH', dirname(__FILE__) . "/wumashi/"); //æ¡†æž¶è·¯å¾„
+define('APP_PATH', dirname(__FILE__) . "/blog/"); //é¡¹ç›®è·¯å¾„
 require CORE_PATH . "portal.php";
