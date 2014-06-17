@@ -4,7 +4,7 @@
  *
  * @author 五马石
  */
-class Conf {
+class Conf{
 
     private static $__files = array();
     private static $__data  = array();
@@ -17,10 +17,10 @@ class Conf {
      */
     public static function get($name){
 
-        if (!isset(self::$__files[$name])) {
+        if (!isset(self::$__files[$name])){
             self::$__files[$name] = APP_PATH . "conf/{$name}.conf.php";
 
-            if(!is_file(self::$__files[$name])){
+            if (!is_file(self::$__files[$name])){
                 trigger_error("can't find {$name}.conf.php");
             }
 
@@ -28,10 +28,10 @@ class Conf {
             self::$__data = array_merge(self::$__data, array($name => $data));
         }
 
-        $args   = func_get_args();
-        $conf   = self::$__data;
+        $args = func_get_args();
+        $conf = self::$__data;
 
-        foreach ($args as $n) {
+        foreach ($args as $n){
             $conf = isset($conf[$n]) ? $conf[$n] : null;
         }
 

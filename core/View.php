@@ -5,7 +5,7 @@
  * Time: 2013-8-11
  * Description:
  */
-class View {
+class View{
 
     private static $__data = array();
 
@@ -14,10 +14,10 @@ class View {
      * @param type $key
      * @param type $val
      */
-    public static function assign($key, $val = null) {
-        if (is_array($key)) {
+    public static function assign($key, $val = null){
+        if (is_array($key)){
             self::$__data = array_merge(self::$__data, $key);
-        } elseif ($val) {
+        } else{
             self::$__data[$key] = $val;
         }
     }
@@ -28,15 +28,15 @@ class View {
      * @param mix $val  数组或者字符串
      * @param type $signal false  合并 $val 到 $key 中,  true 增加 val 到 $key中
      */
-    public static function addValue($key, $val = '', $signal = false) {
-        if (is_string($val) || $signal) {
+    public static function addValue($key, $val = '', $signal = false){
+        if (is_string($val) || $signal){
             self::$__data[$key][] = $val;
-        } elseif (is_array($val)) {
-            self::$__data[$key] = array_merge(isset(self::$__data[$key])? self::$__data[$key] : array(), $val);
+        } elseif (is_array($val)){
+            self::$__data[$key] = array_merge(isset(self::$__data[$key]) ? self::$__data[$key] : array(), $val);
         }
     }
 
-    public static function getData() {
+    public static function getData(){
         return self::$__data;
     }
 
@@ -45,7 +45,7 @@ class View {
      * @param type $tpl
      * @param type $data
      */
-    public static function render($tpl = '', $data = array()) {
+    public static function render($tpl = '', $data = array()){
         echo self::fetch($tpl, $data);
     }
 
@@ -56,8 +56,8 @@ class View {
      * @param type $layout
      */
     public static function layout($tpl = "", $data = array(), $layout = "layout"){
-         $data['tpl'] = $tpl;
-         self::render($layout, $data);
+        $data['tpl'] = $tpl;
+        self::render($layout, $data);
     }
 
     /**
@@ -66,12 +66,12 @@ class View {
      * @param type $data 数据
      * @return type
      */
-    public static function fetch($tpl = '', $data = array()) {
+    public static function fetch($tpl = '', $data = array()){
         self::$__data = array_merge($data, self::$__data);
 
         $template_file = APP_PATH . "view/$tpl.tpl.php";
 
-        if (self::$__data) {
+        if (self::$__data){
             extract(self::$__data);
         }
         ob_start();
@@ -88,8 +88,7 @@ class View {
      * @param type $callback 回调函数
      */
     public static function outJson($data, $callback = ""){
-        echo $callback ? $callback . "(" . json_encode($data) . ")" : json_encode($data);;
+        echo $callback ? $callback . "(" . json_encode($data) . ")" : json_encode($data);
     }
-
 
 }

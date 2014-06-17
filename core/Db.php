@@ -1,11 +1,10 @@
 <?php
 
 /**
- * @author: 五马石 <abke@qq.com>
- * @link: http://blog.wumashi.com
- * @datetime: 2014-4-15
- * @version: 1.0
- * @Description
+ * 数据库抽象类
+ * 扩展数据库继承该类
+ * @author Dawnc <abke@qq.com>
+ * @date 2013-11-23
  */
 abstract class Db {
 
@@ -17,11 +16,14 @@ abstract class Db {
      * @param type $type 数据库类型
      * @return Db
      */
-    public static function getInstance($conf = "default", $type = "Mysql"){
-        if (!isset(self::$__instance[$type][$conf])) {
-            self::$__instance[$type][$conf] = new $type(Conf::get("db", $conf));
+    public static function getInstance($conf = "default"){
+        
+        if (!isset(self::$__instance[$conf])) {
+            $option = Conf::get("db", $conf);
+            $type   = isset($option['driver']) ?  $option['driver'] : "Mysql";
+            self::$__instance[$conf] = new $type($option);
         }
-        return self::$__instance[$type][$conf];
+        return self::$__instance[$conf];
     }
 
     /**
@@ -29,33 +31,34 @@ abstract class Db {
      * @param string $conf
      * @param string $type
      */
-    public function close($conf = "default", $type = "Mysql"){
-        if (isset(self::$__instance[$type][$conf])) {
-            self::$__instance[$type][$conf]->close();
-            self::$__instance[$type][$conf] = null;
+    public static function shut($conf = "default"){
+        if (isset(self::$__instance[$conf])) {
+            self::$__instance[$conf]->close();
+            self::$__instance[$conf] = null;
         }
     }
 
     /**
      * 获取一个值
      * @param type $query
-     * @param array $data 预定义参数
+     * @param array $bind 预定义参数
      */
-    abstract function getVar($query, $data = null);
+    abstract function getVar($query, $bind = null);
 
      /**
      * 获取一行数据
      * @param type $query
-     * @param array $data 预定义参数
+     * @param array $bind 预定义参数
      */
-    abstract function getLine($query, $data = null);
+    abstract function getLine($query, $bind = null);
 
     /**
      * 获取数据
      * @param type $query
-     * @param array $data 预定义参数
+     * @param array $bind 预定义参数
+     * @return array
      */
-    abstract function getData($query, $data = null);
+    abstract function getData($query, $bind = null);
 
     /**
      * 快捷查询
@@ -81,7 +84,7 @@ abstract class Db {
      * @param mix $where  数组 或者 字符串  字符串则表示ID
      * @return type
      */
-	abstract function update($table, $data, $where);
+    abstract function update($table, $data, $where);
 
     /**
      * 删除
@@ -90,7 +93,7 @@ abstract class Db {
      */
     abstract function delete($table, $where);
 
-     /**
+    /**
      * 转义安全字符
      * @param string $val
      * @return type
@@ -108,8 +111,8 @@ abstract class Db {
     /**
      * 执行sql
      * @param type $query
-     * @param type $data
+     * @param type $bind
      * @return boolean
      */
-    abstract function exec($query, $data = null);
+    abstract function exec($query, $bind = null);
 }
