@@ -13,6 +13,19 @@ date_default_timezone_set('PRC');
 
 header("Content-Type: text/html; charset=UTF-8");
 
+switch (ENV) {
+    case "development":
+        error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
+        break;
+    case "testing":
+        error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
+        break;
+    case "product":
+    default:
+        error_reporting(0);
+        break;
+}
+
  if(!defined('CORE_PATH')){
 	define("CORE_PATH", dirname(__FILE__) . "/");
  }

@@ -108,7 +108,7 @@ function redirect($uri = ""){
 /**
  * 数组变成一个树
  * @param type $items
- * @param boolean $format $items 是否是  格式话好的二维数组数据 数组的一维key为 id值
+ * @param boolean $format $items 是否是  格式话化的二维数组数据 数组的一维key为 id值
  * @return type
  */
 function convert2tree($items, $format = false) {

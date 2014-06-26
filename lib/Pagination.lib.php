@@ -65,7 +65,6 @@ class Pagination{
         //显示几个
         $length = ceil($this->__showNum / 2);
       
-        if($this->__currentPage <= $length){
         if ($this->__currentPage <= $length){
             //前4页
             $this->__startNum = 1; //起始页
