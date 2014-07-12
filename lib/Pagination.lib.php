@@ -13,11 +13,12 @@ class Pagination{
     private $__total; //总记录数
     private $__totalPage; //总页数
     private $__size; //每页记录数
-    private $__currentPage; //当前页码
+    private $__currentPage ; //当前页码
+    private $__page    = 0; //指定的当前页
     private $__pageTag = "{page}"; //页面变量模板
     private $__pageVar = "page"; //page 参数变量
     private $__showNum = 10; //显示多少个页码
-    private $__pageUrl = null;
+    private $__pageUrl = null; // 分页url 模板
     private $__startNum;
     private $__endNum;
 
@@ -31,7 +32,13 @@ class Pagination{
         $this->__getPageUrl();
 
         $this->__totalPage   = ceil(($this->__total ? $this->__total : 1 ) / $this->__size);
-        $this->__currentPage = input($this->__pageVar) ? $this->__pageVar : 1;
+        
+        if($this->__page){
+            //指定的页码
+            $this->__currentPage = $this->__page;
+        }else{
+            $this->__currentPage = input($this->__pageVar) ? $this->__pageVar : 1;
+        }
         
         if ($this->__currentPage > $this->__totalPage) {
             $this->__currentPage = $this->__totalPage;

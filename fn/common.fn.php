@@ -10,6 +10,10 @@ function input($key){
         (isset($_GET[$key]) ? $_GET[$key] : false );
 }
 
+function s_input($key){
+    return strip_tags(urldecode(input($key)));
+}
+
 /**
  * 是否ajax请求
  * @return boolean

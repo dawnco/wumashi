@@ -12,7 +12,7 @@ class Hook{
 
     /**
      *
-     * @param Route $route
+     * @param Request $request
      */
     public function __construct($request){
         $this->__request = $request;
