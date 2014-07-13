@@ -204,7 +204,7 @@ class Mysql extends Db{
 
         if ($result === false){
             $this->error = mysql_errno($this->__link) . " " . mysql_error($this->__link) . " " . $query;
-            trigger_error($this->error . " " . $query);
+            trigger_error($this->error . " [" . $query . "]");
             return false;
         }
         return $result;

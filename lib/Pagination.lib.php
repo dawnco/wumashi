@@ -37,9 +37,9 @@ class Pagination{
             //指定的页码
             $this->__currentPage = $this->__page;
         }else{
-            $this->__currentPage = input($this->__pageVar) ? $this->__pageVar : 1;
+            $this->__currentPage = input($this->__pageVar) ? input($this->__pageVar) : 1;
         }
-        
+
         if ($this->__currentPage > $this->__totalPage) {
             $this->__currentPage = $this->__totalPage;
         }

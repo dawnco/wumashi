@@ -50,8 +50,8 @@ class Request{
 
     private function __initUri(){
 
-        if (isset($this->get['s'])){
-            $uri = $this->get['s'];
+        if (isset($this->get['route'])){
+            $uri = $this->get['route'];
         } elseif (isset($_SERVER['PATH_INFO'])){
             $uri = $_SERVER['PATH_INFO'];
         } elseif (isset($_SERVER['REDIRECT_SCRIPT_URL'])){
