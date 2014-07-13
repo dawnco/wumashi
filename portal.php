@@ -39,6 +39,7 @@ require CORE_PATH . "run/autoloader.php";
 require CORE_PATH . "fn/common.fn.php";
 
 require CORE_PATH . "core/Conf.php";
+require CORE_PATH . "core/Registry.php";
 require CORE_PATH . "core/Route.php";
 require CORE_PATH . "core/Dispatcher.php";
 require CORE_PATH . "core/Request.php";
@@ -53,5 +54,8 @@ if(Conf::get("app", "session_autostart") !== false){
     Session::instance();
 }
 
-$dispatcher = new Dispatcher(new Request(new Route()));
+
+Registry::add("request", new Request(new Route()));
+
+$dispatcher = new Dispatcher(Registry::get("request"));
 $dispatcher->run();

@@ -9,8 +9,8 @@ abstract class _Control{
 
     protected $_request = null, $_error   = null;
 
-    function __construct($request){
-        $this->_request = $request;
+    function __construct(){
+        $this->_request = Registry::get("request");
     }
 
     /**

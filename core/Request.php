@@ -65,6 +65,10 @@ class Request{
         $this->__uri = trim($uri, " /");
     }
 
+    /**
+     * 获取请求的uri
+     * @return type
+     */
     public function getUri(){
         return $this->__uri;
     }
