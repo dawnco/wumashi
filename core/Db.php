@@ -9,7 +9,12 @@
 abstract class Db {
 
     private static $__instance = null;
-
+    
+    /**
+     *
+     * @var 执行过的sql 
+     */
+    public $sql     = null;
     /**
      * 获取Db实例
      * @param type $conf 配置名
@@ -36,6 +41,10 @@ abstract class Db {
             self::$__instance[$conf]->close();
             self::$__instance[$conf] = null;
         }
+    }
+    
+    public function debug() {
+        var_dump($this->sql);
     }
 
     /**

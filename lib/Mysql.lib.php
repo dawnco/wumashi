@@ -241,7 +241,9 @@ class Mysql extends Db{
      */
     public function prepare($query, $data = null){
 
-        if (!is_array($data)){
+        if($data === null){
+            return $query;
+        }elseif (!is_array($data)){
             $data  = func_get_args();
             $query = array_shift($data);
         }
