@@ -1,12 +1,16 @@
 <?php
 
 /**
- *
- * @author Dawnc <abke@qq.com>
+ * 基类
+ * @author Dawnc
  * @date 2013-11-23
  */
 abstract class _Control{
-
+    
+    const AJAX_SUCCESS = "success";
+    const AJAX_ERROR   = "error";
+    const AJAX_NOTICE  = "notice";
+    
     protected $_request = null, $_error   = null;
 
     function __construct(){
@@ -14,44 +18,32 @@ abstract class _Control{
     }
 
     /**
-     * 输出json数据
-     * @param string $status 状态
-     * @param type $msg 消息
-     * @param type $data 数据
+     * ajax 输出
+     * @param type $message
+     * @param string $status
+     * @param type $data
+     * @param type $url
      */
-    protected function _outJson($status = 'success', $msg = '', $data = '', $url = ''){
-        $all_status = array("success", "error", "fail", "warn", "notice");
+    protected function _ajax($message = '', $status = self::AJAX_SUCCESS, $data = '', $url = ''){
+        $all_status = array(self::AJAX_SUCCESS, self::AJAX_ERROR, self::AJAX_NOTICE);
         if (!in_array($status, $all_status)){
             $status = 'unkonw';
         }
-        $out = array("status" => $status, "message" => $msg, "data" => $data, "url" => $url);
+        $out['status'] = $status;
+        $out['message'] = $message;
+        if($data){
+            $out['data']    = $data;
+        }
+        if($url){
+            $out['url']    = $url;
+        }
         echo View::json($out, input('jsoncallback'));
         exit;
     }
 
-    /** 设置页面javascript */
-    protected function _addScript($src){
-        View::addValue('scripts', $src);
-    }
-
-    /** 设置页面 stylesheet */
-    protected function _addStylesheet($src){
-        View::addValue('stylesheets', $src);
-    }
-
-    /** 设置页面 title 信息 */
-    protected function _setMetaTitle($string){
-        $this->_a("meta_title", $string);
-    }
-
-    /** 设置页面 description */
-    protected function _setMetaDescription($string){
-        View::assign("meta_description", $string);
-    }
-
-    /** 设置页面 keyword */
-    protected function _setMetaKeyword($string){
-        View::assign("meta_keyword", $string);
+    /** 设置页面 三要数 信息 */
+    protected function _setMeta($title, $description, $keywords){
+        View::assign("meta", array("title" => $title, "description" => $description, "keywords" =>  $keywords));
     }
 
     /** 面包屑导航  */
@@ -65,7 +57,7 @@ abstract class _Control{
      * @param string $field 消息字段或者消息类型
      * @return mix 
      */
-    protected function _noticeMessage($msg = null, $field = "error"){
+    protected function _message($msg = null, $field = "error"){
         View::addValue("__" . $field, $msg);
     }
 

@@ -126,6 +126,11 @@ class Upload {
     }
 
     public function save($file){
+        
+        if($this->__error){
+            return false;
+        }
+        
         if (!move_uploaded_file($this->__UPFILE['tmp_name'], $file)) {
             $this->__error = "上传失败";
             return false;

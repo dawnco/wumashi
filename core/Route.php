@@ -25,7 +25,7 @@ class Route{
         $rules  = Conf::get("url");
 
         //默认
-        if ($this->__uri == ''){
+        if ($this->__uri == 'default'){
             $this->__controlFile = "Default";
             $routed              = true;
         }

@@ -62,11 +62,9 @@ class Tree {
      * @return type
      */
     private function __toTree($items) {
-
         foreach ($items as $item) {
             $items[$item['pid']]['child'][$item['id']] = &$items[$item['id']];
         }
-        
         return isset($items[0]['child']) ? $items : array();
     }
     
@@ -179,7 +177,9 @@ class Tree {
         
         $ids = array_merge($this->parentIds, array($id));
         foreach ($ids as $i) {
-            $this->__data[$i]['active'] = true;
+            if(isset($this->__data[$i])){
+                $this->__data[$i]['active'] = true;
+            }
         }
         
         $this->__tree = $this->__toTree($this->__data);

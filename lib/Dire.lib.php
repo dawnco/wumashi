@@ -45,7 +45,7 @@ class Dire {
             }
 
             if (is_dir($dir . '/' . $file)) {
-                self::readDirIterative($dir . '/' . $file, $mask);
+                self::readIterative($dir . '/' . $file, $mask);
                 continue;
             } else {
                 if ($mask && !preg_match($mask, $file)) {

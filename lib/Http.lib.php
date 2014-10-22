@@ -5,17 +5,19 @@
  * @date    2014-06-23
  */
 class Http {
-
+	
+	static $error = '';
     /**
      * 
      * @param type $url
      * @param type $data
+	 * @param array $opt curl set_opt参数
      * @return type
      */
-    public static function request($url, $data = array()) {
+    public static function request($url, $data = array(), $opt = array()) {
 
-        $userAgent = "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Trident/4.0; CIBA; InfoPath.2; .NET CLR 2.0.50727)";
-        $header    = array('Accept-Language: zh-cn', 'Connection: Keep-Alive');
+        $userAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:31.0) Gecko/20100101 Firefox/31.0";
+        $header    = array('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8');
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -35,8 +37,24 @@ class Http {
         }
 
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1); //跟随跳转
+		
+		if($opt){
+			foreach($opt as $k => $v){
+				curl_setopt($ch, $k , $v); //跟随跳转
+			}
+		}
+		
         $output = curl_exec($ch);
+		
+		if($output === false){
+			self::$error = curl_error($ch);
+		}
+		
         curl_close($ch);
+		
+		
+		
+		
         return $output;
     }
 
@@ -45,8 +63,8 @@ class Http {
      * @param type $des 保存路径
      * @param type $url
      */
-    public static function saveFromUrl($des, $url) {
-        $data = self::request($url);
+    public static function saveFromUrl($des, $url, $opt = array()) {
+        $data = self::request($url, array(), $opt);
         if(!is_dir(dirname($des))){
             mkdir(dirname($des),0755, true);
         }
@@ -58,8 +76,8 @@ class Http {
      * @param type $des 保存路径
      * @param type $url
      */
-    public static function saveImageFromUrl($des, $url) {
-        self::saveFromUrl($des, $url);
+    public static function saveImageFromUrl($des, $url, $opt = array()) {
+        self::saveFromUrl($des, $url, $opt);
         if (!getimagesize($des)) {
             unlink($des);
         }

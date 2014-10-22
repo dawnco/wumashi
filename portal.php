@@ -15,10 +15,10 @@ header("Content-Type: text/html; charset=UTF-8");
 
 switch (ENV) {
     case "development":
-        error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
+        error_reporting(E_ALL);
         break;
     case "testing":
-        error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
+        error_reporting(E_ALL);
         break;
     case "product":
     default:
@@ -47,6 +47,7 @@ require CORE_PATH . "core/View.php";
 require CORE_PATH . "core/Hook.php";
 require CORE_PATH . "core/Control.php";
 require CORE_PATH . "core/Db.php";
+
 
 require APP_PATH . "fn/app.fn.php";
 

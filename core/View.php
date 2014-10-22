@@ -6,7 +6,12 @@
  * Description:
  */
 class View{
-
+    
+    //ajax 状态
+    const AJAX_SUCCESS = "success";
+    const AJAX_ERROR   = "error";
+    const AJAX_NOTICE  = "notice";
+    
     private static $__data = array();
 
     /**
@@ -51,9 +56,9 @@ class View{
 
     /**
      * 输出layout模板
-     * @param type $tpl
+     * @param string $tpl
      * @param array $data
-     * @param type $layout
+     * @param string $layout
      */
     public static function layout($tpl = "", $data = array(), $layout = "layout"){
         $data['tpl'] = $tpl;
@@ -87,8 +92,21 @@ class View{
      * @param type $data 数据
      * @param type $callback 回调函数
      */
-    public static function outJson($data, $callback = ""){
+    public static function json($data, $callback = ""){
         echo $callback ? $callback . "(" . json_encode($data) . ")" : json_encode($data);
     }
 
+    public static function ajax($message, $status = self::AJAX_SUCCESS, $data = "") {
+        $all_status = array(self::AJAX_SUCCESS, self::AJAX_ERROR, self::AJAX_NOTICE);
+        if (!in_array($status, $all_status)){
+            $status = 'unkonw';
+        }
+        $out['status'] = $status;
+        $out['message'] = $message;
+        if($data){
+            $out['data']    = $data;
+        }
+        echo self::json($out, input('jsoncallback'));
+        exit;
+    }
 }

@@ -63,6 +63,7 @@ class Request{
         }
 
         $this->__uri = trim($uri, " /");
+        $this->__uri = $this->__uri ? $this->__uri : "default";
     }
 
     /**

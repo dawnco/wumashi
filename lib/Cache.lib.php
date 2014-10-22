@@ -3,45 +3,63 @@
 /**
  *
  * @author  Dawnc
- * @date    2014-04-25
+ * @date    2014-04-08
  */
 class Cache {
 
-    protected static $_instance = null;
+  
+    private $__keyPrefix = "cache-key-";
+    private $__storage = null;
+    
+    
+    private static $__instance = array();
 
-    public static function getInstance(){
-        if(self::$_instance == null){
-            self::$_instance = new CacheMemcache();
+    /**
+     * 获取缓存实例
+     * @param type $storage  存储方式  可选址  Memcache Redis
+     * @return type
+     */
+    public static function getInstance($storage = "Redis") {
+        if (!isset(self::$__instance[$storage])) {
+            self::$__instance[$storage] = new Cache($storage);
         }
-        return self::$_instance;
-    }
-    
-    public function set($key, $value) {}
-    
-    public function get($key) {}
-    
-    public function delete($key) {}
-}
-
-
-class CacheMemcache{
-
-    protected $_handler = null;
-
-    public function __construct() {
-        $this->_handler = new memcache();
-        $host           = Conf::get("cache", 'memcache', "server");
-        $port           = Conf::get("cache", 'memcache', "port");
-        $this->_handler->connect($host, $port, 30);
-
-        if(!$this->_handler){
-            trigger_error("can't connect memcache $host $port");
-        }
-
+        return self::$__instance[$storage];
     }
 
-    public function get($key){
-        $data = $this->_handler->get($key);
+    /**
+     * 设置前缀
+     * @param type $prefix
+     */
+    public function setPrefix($prefix) {
+        $this->__keyPrefix = $prefix;
+    }
+
+    private function __construct($storage) {
+        $cls = "CacheStorage{$storage}";
+        $this->__storage = new $cls();
+
+    }
+
+    private function __key($key) {
+        return $this->__keyPrefix . $key;
+    }
+
+    /**
+     * 设置缓存
+     * @param type $key
+     * @param type $val
+     * @param type $expire 过期时间  0 不过期
+     */
+    public function set($key, $val, $expire = 3600) {
+        $this->__storage->set($this->__key($key), serialize($val), $expire);
+    }
+
+    /**
+     * 获取缓存
+     * @param type $key
+     */
+    public function get($key) {
+        $data =  $this->__storage->get($this->__key($key));
         if($data){
             return unserialize($data);
         }else{
@@ -49,15 +67,83 @@ class CacheMemcache{
         }
     }
 
-    public function set($key, $value, $expire = 1800){
-        return $this->_handler->set($key, serialize($value), MEMCACHE_COMPRESSED, $expire);
+    /**
+     * 删除缓存
+     * @param type $key
+     */
+    public function delete($key) {
+        $this->__storage->delete($this->__key($key));
     }
+}
 
+class CacheStorageRedis{
+    
+    private $__redis = null;
+    
+    public $connected   = false;
+
+    public function __construct(){
+        $this->__redis = new Redis();
+        $conf = Conf::get("cache", "redis", "default");
+        $this->__redis->connect($conf['host'], $conf['port']);
+    }
+    
+    public function set($key, $value, $expire){
+        return $this->__redis->setex($key, $expire, $value);
+    }
+    
+    public function get($key){
+        return $this->__redis->get($key);
+    }
+    
     public function delete($key){
-        $this->_handler->delete($key);
+        return $this->__redis->delete($key);
     }
+    
+    /**
+     * 是否存在
+     * @param type $key
+     * @return boolean true 存在 false 不存在
+     */
+    public function exist($key){
+        return $this->__redis->exists($key);
+    }
+    
+    public function close(){
+        $this->__redis->close();
+    }
+    
+}
 
-    public function flush(){
-        $this->_handler->flush();
+class CacheStorageMemcache{
+    
+    private $__memcache = null;
+    //是否已经链接
+    public $connected   = false;
+
+    public function __construct(){
+        $this->__memcache = new Memcache();
+        $conf             = $conf = Conf::get("cache", "memcache", "default");;
+        $this->connected  = $this->__memcache->connect($conf['host'], $conf['port'], 10);
+    }
+    
+    public function get($key){
+        return $this->__memcache->get($key);
+    }
+    
+    public function set($key, $value, $expire){
+        return $this->__memcache->set($key, $value, MEMCACHE_COMPRESSED, $expire);
+    }
+    
+    public function delete($key){
+        return $this->__memcache->delete($key);
+    }
+    
+    public function exist($key){
+        
+    }
+    
+    public function close(){
+        $this->__memcache->close();
     }
 }

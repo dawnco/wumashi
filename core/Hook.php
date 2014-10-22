@@ -42,7 +42,10 @@ class Hook{
         if (!isset($this->__hooks[$name])){
             return false;
         }
-
+        
+        //排序
+        usort($this->__hooks[$name], array($this, "__sort"));
+                
         foreach ($this->__hooks[$name] as $hook){
 
             $hook_class_name = $hook['h'] . "Hook";
@@ -53,6 +56,14 @@ class Hook{
             //执行
             call_user_func_array(array($this->___hook_class[$hook_class_name], $method), $this->__request->getParam());
         }
+    }
+    
+    /**
+     * 排序
+     */
+    private function __sort($a, $b) {
+        if ($a['seq'] == $b['seq']) return 0;
+	return $a['seq'] > $b['seq'] ? 1 : -1;	// 按升序排列
     }
 
 }
