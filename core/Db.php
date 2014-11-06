@@ -92,7 +92,7 @@ abstract class Db {
             $query = array_shift($data);
         }
 
-        $query = str_replace(array('?i', '?s', '?p', '%'), array('%d', '"%s"', '%s', '%%'), $query);
+        $query = str_replace(array('%', '?i', '?s', '?p'), array( '%%', '%d', '"%s"', '%s'), $query);
         foreach ($data as $k => $v){
             $data[$k] = $this->escape($v);
         }
