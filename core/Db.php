@@ -52,13 +52,13 @@ abstract class Db {
     * 主要解决前台可选一项或多项条件进行查询时的sql拼接
     * 
     * 拼接规则：
-    * 's'=>sql，必须，伪sql片段，$1..$n为反向引用，引用后面的值数组
+    * 's'=>sql，必须，sql片段
     * 'v'=>值缩写，必须，sql片段中要填充的值
     * 'c'=>条件，选填，默认判断不为空，如果设置了条件则用所设置的条件
     * 
     * $factor_list = array(
     * 		array('s'=>'and a.id=?i', 'v'=>12 ),
-    * 		array('s'=>"and a.name like '%$p'", 'v'=>'peng'),
+    * 		array('s'=>"and a.name like '%?p'", 'v'=>'xing'),
     * 		array('s'=>'and a.age > ?i', 'v'=>18),
     * 		array('s'=>'or (a.time > ?s and a.time < ?s )', 'v'=>array('2014', '2015'), 'c'=>(1==1) )
     * );
@@ -92,7 +92,7 @@ abstract class Db {
             $query = array_shift($data);
         }
 
-        $query = str_replace(array('?i', '?s', '?p'), array('%d', '"%s"', '%s'), $query);
+        $query = str_replace(array('?i', '?s', '?p', '%'), array('%d', '"%s"', '%s', '%%'), $query);
         foreach ($data as $k => $v){
             $data[$k] = $this->escape($v);
         }
