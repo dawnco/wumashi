@@ -72,10 +72,10 @@ class View{
      * @return type
      */
     public static function fetch($tpl = '', $data = array()){
-        self::$__data = array_merge($data, self::$__data);
-
+        self::$__data = array_merge(self::$__data, $data);
+       
         $template_file = APP_PATH . "view/$tpl.tpl.php";
-
+     
         if (self::$__data){
             extract(self::$__data);
         }

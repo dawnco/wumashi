@@ -47,8 +47,6 @@ require CORE_PATH . "core/View.php";
 require CORE_PATH . "core/Hook.php";
 require CORE_PATH . "core/Control.php";
 require CORE_PATH . "core/Db.php";
-
-
 require APP_PATH . "fn/app.fn.php";
 
 if(Conf::get("app", "session_autostart") !== false){

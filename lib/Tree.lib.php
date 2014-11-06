@@ -81,7 +81,7 @@ class Tree {
      * @param type $current_id
      * @retrun array
      */
-    public function findParnetIds($current_id) {
+    public function findParentIds($current_id) {
         $pid = 0;
         foreach ($this->__data as $id => $vo) {
             if ($current_id == $id) {
@@ -92,7 +92,7 @@ class Tree {
         }
         
         if($pid !=0){
-            $this->findParnetIds($pid);
+            $this->findParentIds($pid);
         }
     }
 

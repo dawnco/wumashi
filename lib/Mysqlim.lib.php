@@ -239,28 +239,6 @@ class Mysqlim extends Db{
     }
 
     /**
-     * 预编译sql语句 ?i 表示int ?s 字符串
-     * @param type $query
-     * @param type $data
-     * @return type
-     */
-    public function prepare($query, $data = null){
-
-         if($data === null){
-            return $query;
-        }elseif (!is_array($data)){
-            $data  = func_get_args();
-            $query = array_shift($data);
-        }
-
-        $query = str_replace(array('?i', '?s'), array('%d', '"%s"'), $query);
-        foreach ($data as $k => $v){
-            $data[$k] = $this->escape($v);
-        }
-        return vsprintf($query, $data);
-    }
-
-    /**
      * 关闭数据库
      * @param string $conf
      * @param string $type

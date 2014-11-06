@@ -6,39 +6,11 @@
  * @date 2013-11-23
  */
 abstract class _Control{
-    
-    const AJAX_SUCCESS = "success";
-    const AJAX_ERROR   = "error";
-    const AJAX_NOTICE  = "notice";
-    
+  
     protected $_request = null, $_error   = null;
 
     function __construct(){
         $this->_request = Registry::get("request");
-    }
-
-    /**
-     * ajax 输出
-     * @param type $message
-     * @param string $status
-     * @param type $data
-     * @param type $url
-     */
-    protected function _ajax($message = '', $status = self::AJAX_SUCCESS, $data = '', $url = ''){
-        $all_status = array(self::AJAX_SUCCESS, self::AJAX_ERROR, self::AJAX_NOTICE);
-        if (!in_array($status, $all_status)){
-            $status = 'unkonw';
-        }
-        $out['status'] = $status;
-        $out['message'] = $message;
-        if($data){
-            $out['data']    = $data;
-        }
-        if($url){
-            $out['url']    = $url;
-        }
-        echo View::json($out, input('jsoncallback'));
-        exit;
     }
 
     /** 设置页面 三要数 信息 */
@@ -59,21 +31,6 @@ abstract class _Control{
      */
     protected function _message($msg = null, $field = "error"){
         View::addValue("__" . $field, $msg);
-    }
-
-    /** 是否ajax提交 */
-    protected function _isAjax(){
-        if (input("ajax")){
-            return true;
-        } elseif ($_SERVER['HTTP_X_REQUESTED_WITH']){
-            return true;
-        }
-        return false;
-    }
-
-    /** 是否POST */
-    protected function _isPost(){
-        return strtoupper($_SERVER['REQUEST_METHOD'] == 'POST') ? true : false;
     }
 
 }
