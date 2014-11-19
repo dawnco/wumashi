@@ -44,6 +44,7 @@ abstract class Db {
     }
     
     public function debug() {
+        echo "<pre>";
         var_dump($this->sql);
     }
     

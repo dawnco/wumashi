@@ -209,7 +209,7 @@ class Mysqlim extends Db{
 
         if ($result === false){
             $this->error = $this->__link->errno . " " . $this->__link->error . " " . $query;
-            trigger_error($this->error . " " . $query);
+            trigger_error($this->error, E_USER_ERROR);
             return false;
         }
         return $result;

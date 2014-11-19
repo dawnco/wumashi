@@ -14,7 +14,7 @@ abstract class _Control{
     }
 
     /** 设置页面 三要数 信息 */
-    protected function _setMeta($title, $description, $keywords){
+    protected function _setMeta($title, $description = "", $keywords = ""){
         View::assign("meta", array("title" => $title, "description" => $description, "keywords" =>  $keywords));
     }
 

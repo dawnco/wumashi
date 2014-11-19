@@ -37,8 +37,8 @@ class Tree {
      * 获取树
      * @return type
      */
-    public function getTree() {
-        return isset($this->__tree[0]['child']) ? $this->__tree[0]['child'] : array() ;
+    public function getTree($id = 0) {
+        return isset($this->__tree[$id]['child']) ? $this->__tree[$id]['child'] : array() ;
     }
 
     /**
@@ -104,7 +104,7 @@ class Tree {
     public function getChild($id = 0) {
         
         if(!$this->parentIds){
-            $this->findParnetIds($id);
+            $this->findParentIds($id);
         }
         $ids = array_reverse($this->childIds);
         $ids[] = $id;

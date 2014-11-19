@@ -22,6 +22,10 @@ class Pagination{
     private $__startNum;
     private $__endNum;
 
+    /**
+     * 
+     * @param type $option array("total" => 总记录数, "size"=>每页数目)
+     */
     public function __construct($option){
 
         foreach ($option as $key => $value) {
@@ -52,15 +56,14 @@ class Pagination{
      */
     private function __getPageUrl(){
         if ($this->__pageUrl == null){
-            $uri          = str_replace($_SERVER['QUERY_STRING'], "", $_SERVER['REQUEST_URI']);
-            $uri          = trim($uri, "?");
+            $uri          = Registry::get("request")->getUri();
             $get          = $_GET;
             unset($get[$this->__pageVar]);
             $query_string = "";
             foreach ($get as $key => $vo){
                 $query_string .= $key . "=" . $vo . "&";
             }
-            $this->__pageUrl = $uri . "?" . $query_string . "page={page}";
+            $this->__pageUrl = site_url($uri) . "?" . $query_string . "page={page}";
         }
     }
 

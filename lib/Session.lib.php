@@ -24,8 +24,6 @@ class Session {
         }
         
         $sid = $this->__sid();
-
-        
         
         session_name($this->__option['cookie_sid_name']);
         session_id($sid);
@@ -47,9 +45,7 @@ class Session {
      */
     private function __sid($new = false){
 
-        $sid = isset($_GET[$this->__option['cookie_sid_name']]) ?
-                $_GET[$this->__option['cookie_sid_name']] :
-                    (isset($_COOKIE[$this->__option['cookie_sid_name']]) ? $_COOKIE[$this->__option['cookie_sid_name']] : "");
+        $sid = $this->getSid();
 
         if($new || !$sid || strlen($sid) < 32){
             $str = '';
@@ -68,7 +64,13 @@ class Session {
 
         return $sid;
     }
-
+    
+    public function getSid(){
+        return isset($_GET[$this->__option['cookie_sid_name']]) ?
+                $_GET[$this->__option['cookie_sid_name']] :
+                    (isset($_COOKIE[$this->__option['cookie_sid_name']]) ? $_COOKIE[$this->__option['cookie_sid_name']] : "");
+    }
+    
     public static function get($key){
         return isset($_SESSION[$key]) ? $_SESSION[$key] : null;
     }
@@ -83,6 +85,11 @@ class Session {
 
     }
 
+    public static function sid(){
+        return self::$__instance->getSid();
+    }
+  
+    
     public static function destroy(){
         session_destroy();
     }

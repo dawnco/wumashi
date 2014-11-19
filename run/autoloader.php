@@ -6,7 +6,7 @@
  * @date    2014-04-30
  */
 
-function __autoload($class){
+function __wms_autoload($class){
 
 
     //控制器
@@ -51,3 +51,6 @@ function __autoload($class){
     return true;
 
 }
+
+
+spl_autoload_register("__wms_autoload");

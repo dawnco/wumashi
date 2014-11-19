@@ -15,7 +15,7 @@ function s_input($key) {
 }
 
 
-function show_404($str) {
+function show_404($str = "") {
 
     if (ENV == "development") {
         $message = $str;
