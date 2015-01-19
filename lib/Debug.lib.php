@@ -87,8 +87,6 @@ class Debug {
             E_USER_NOTICE       => 'User Notice',
             E_STRICT            => 'Runtime Notice',
             E_RECOVERABLE_ERROR => 'Recover Error',
-            E_DEPRECATED        => 'Deprecated ',
-            E_USER_DEPRECATED   => 'User Deprecated ',
         );
 
         return isset($levels[$error_type]) ? $levels[$error_type] : "";

@@ -16,16 +16,24 @@ class Conf{
      * @return type
      */
     public static function get($name){
-
+        
         if (!isset(self::$__files[$name])){
+            
             self::$__files[$name] = APP_PATH . "conf/{$name}.conf.php";
 
             if (!is_file(self::$__files[$name])){
                 trigger_error("can't find {$name}.conf.php");
             }
-
+            
+            
+            $core_conf = CORE_PATH . "conf/{$name}.conf.php";
+            if(is_file($core_conf)){
+                $data = include $core_conf;
+                self::set($name, $data, true);
+            }
+            
             $data = include self::$__files[$name];
-            self::$__data = array_merge(self::$__data, array($name => $data));
+            self::set($name, $data, true);
         }
 
         $args = func_get_args();
@@ -37,9 +45,19 @@ class Conf{
 
         return $conf;
     }
-
-    public static function set($name, $value){
-        self::$__data[$name] = $value;
+    
+    /**
+     * 
+     * @param type $name
+     * @param type $value
+     * @param type $append 合并或者复制
+     */
+    public static function set($name, $value, $append = false){
+        if($append){
+            self::$__data[$name] = array_merge(isset(self::$__data[$name]) ? self::$__data[$name] : array(), $value);
+        }else{
+            self::$__data[$name] = $value;
+        }
     }
 
 }

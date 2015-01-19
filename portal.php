@@ -34,9 +34,12 @@ switch (ENV) {
 	define("ROOT", dirname(dirname(__FILE__)). "/");
  }
 
-require CORE_PATH . "run/autoloader.php";
-
+require CORE_PATH . "fn/autoload.fn.php";
 require CORE_PATH . "fn/common.fn.php";
+require CORE_PATH . "fn/app.fn.php";
+require CORE_PATH . "fn/transcribe.fn.php";
+
+require APP_PATH .  "fn/app.fn.php";
 
 require CORE_PATH . "core/Conf.php";
 require CORE_PATH . "core/Registry.php";
@@ -47,10 +50,9 @@ require CORE_PATH . "core/View.php";
 require CORE_PATH . "core/Hook.php";
 require CORE_PATH . "core/Control.php";
 require CORE_PATH . "core/Db.php";
-require APP_PATH . "fn/app.fn.php";
 
 if(Conf::get("app", "session_autostart") !== false){
-    Session::instance();
+    Session::instance(Conf::get("session"));
 }
 
 

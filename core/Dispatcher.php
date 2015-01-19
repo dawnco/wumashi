@@ -32,7 +32,7 @@ class Dispatcher{
         if (is_file($controlFile)){
             include $controlFile;
             $controlCls    = $control . "Control";
-            $classInstance = new $controlCls($this->_request);
+            $classInstance = new $controlCls();
             if (method_exists($classInstance, $method)){
                 call_user_func_array(array($classInstance, $method), $param);
             } else{

@@ -168,7 +168,7 @@ class Mysql extends Db{
                 array_push($update_where, sprintf('`%s` = "%s"', $field, $this->escape($value)));
             }
             $update_where = 'WHERE ' . implode(' AND ', $update_where);
-        } elseif ($where){
+        } elseif (is_numeric($where)){
             $update_where = 'WHERE ' . $this->prepare("id = ?i", $where);
         }
         $query = "UPDATE `{$table}` SET {$update_data} {$update_where}";

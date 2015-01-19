@@ -15,7 +15,7 @@ class FormBuilder {
      * @param type $opts  array("pad" => "缩进字符", "default_option" => "第一个选项", ...) ... select 其他属性
      * @return string
      */
-    static function select($data, $name, $select = "", $opts = array()) {
+    public static function select($data, $name, $select = "", $opts = array()) {
         $html = "<select name=\"{$name}\"";
 
         //占位符
@@ -36,13 +36,13 @@ class FormBuilder {
             $html .= " $key=\"{$value}\" ";
         }
         $html .= ">";
-        $html .= self::selectOption($data, $select, $pad);
+        $html .= self::__selectOption($data, $select, $pad);
         $html .= "</select>";
 
         return $html;
     }
 
-    static function selectOption($data, $select, $pad, $pad_length = 0) {
+    private static function __selectOption($data, $select, $pad, $pad_length = 0) {
         $html = "";
 
         $pad_str = "";
@@ -60,10 +60,30 @@ class FormBuilder {
 
             $html .= "<option {$selected} value=\"{$value['id']}\">{$pad_str}{$value['name']}</option>\n";
             if (!empty($value['child'])) {
-                $html .= self::selectOption($value['child'], $select, $pad, $pad_length + 1);
+                $html .= self::__selectOption($value['child'], $select, $pad, $pad_length + 1);
             }
         }
         return $html;
     }
 
+    
+    public static function checkbox($data = array(), $name = "",$checked = array(), $key_value = "id", $key_name = "name", $type = "checkbox"){
+        $tpl = '<label class="check"><input  name="%s" type="%s" %s value="%s">%s</label>';
+        
+        $html  = "";
+        foreach($data as $vo){
+            $cked = "";
+            if(in_array($vo[$key_value], $checked)){
+                $cked = 'checked="checked"';
+            }
+            $html .= sprintf($tpl, $name, $type, $cked, $vo[$key_value],$vo[$key_name]);
+        }
+        return $html;
+    }
+    
+    public static function raido($data = array(), $name = "",$checked = array(), $key_value = "id", $key_name = "name") {
+        return self::checkbox($data, $name, $checked, $key_value, $key_name, "radio");
+    }
+    
+    
 }

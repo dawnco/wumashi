@@ -43,7 +43,7 @@ class Hook{
             return false;
         }
         
-        //排序
+        //排序 升序排
         usort($this->__hooks[$name], array($this, "__sort"));
                 
         foreach ($this->__hooks[$name] as $hook){
@@ -51,7 +51,7 @@ class Hook{
             $hook_class_name = $hook['h'] . "Hook";
             $method          = isset($hook['m']) ? $hook['m'] : "hook";
             if (!isset($this->___hook_class[$hook_class_name])){
-                $this->___hook_class[$hook_class_name] = new $hook_class_name($this->__request);
+                $this->___hook_class[$hook_class_name] = new $hook_class_name();
             }
             //执行
             call_user_func_array(array($this->___hook_class[$hook_class_name], $method), $this->__request->getParam());

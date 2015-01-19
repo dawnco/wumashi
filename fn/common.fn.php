@@ -5,9 +5,30 @@
  * @author Dawnc <abke@qq.com>
  */
 
-function input($key) {
-    return isset($_POST[$key]) ? $_POST[$key] :
+/**
+ * 
+ * @param type $key
+ * @param type $val_type
+ * @return type
+ */
+function input($key, $val_type = null) {
+    $val = isset($_POST[$key]) ? $_POST[$key] :
             (isset($_GET[$key]) ? $_GET[$key] : false );
+    
+    
+    switch ($val_type){
+        case "i":
+            $val = (int) $val;
+            break;
+        case "s" : 
+            $val = (int) $val;
+            break;
+        case "a" : 
+            $val = (array) $val;
+            break;
+    }
+    
+    return $val;
 }
 
 function s_input($key) {

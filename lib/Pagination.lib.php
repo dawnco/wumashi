@@ -57,6 +57,7 @@ class Pagination{
     private function __getPageUrl(){
         if ($this->__pageUrl == null){
             $uri          = Registry::get("request")->getUri();
+            $uri          = $uri == "default" ? "" : $uri;
             $get          = $_GET;
             unset($get[$this->__pageVar]);
             $query_string = "";

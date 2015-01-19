@@ -1,7 +1,7 @@
 <?php
 
 /**
- *
+ * 自动加载
  * @author  Dawnc
  * @date    2014-04-30
  */
@@ -51,6 +51,5 @@ function __wms_autoload($class){
     return true;
 
 }
-
 
 spl_autoload_register("__wms_autoload");
