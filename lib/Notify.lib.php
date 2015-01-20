@@ -15,7 +15,7 @@ class Notify {
     /**
      * 
      * @param type $type        类型  
-     * @param type $action      动作 see 动作类型 delete modify 
+     * @param type $action      动作 如 delete modify 
      * @param type $message     消息 id 或者字符串
      */
     public static function add($type, $action, $message) {
@@ -46,15 +46,19 @@ class Notify {
             $name = $notify['type'] . "Notify";
 
             //加载通知处理类
-            if (!isset(self::$__runClass[$name])) {
-                include CORE_PATH . "libs/nofity/$name.php";
+            $file = CORE_PATH . "libs/nofity/$name.php";
+            
+            if (!isset(self::$__runClass[$name]) && is_file($file)) {
+                
+                include $file;
+                
                 if (class_exists($name)) {
                     self::$__runClass[$name] = new $name();
                 }
             }
             
             //处理通知
-            if(isset(self::$__runClass[$name]) && method_exists(self::$__runClass[$name], $notify['action'])){
+            if(isset(self::$__runClass[$name]) && is_callable(array(self::$__runClass[$name], $notify['action']))){
                 call_user_func(array(self::$__runClass[$name], $notify['action']), $notify['message']);
             }
         }
