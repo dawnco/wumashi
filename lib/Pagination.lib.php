@@ -120,25 +120,27 @@ class Pagination{
         if ($this->__totalPage == 1){
             return $str;
         }
-
-        if ($this->__currentPage == 1){
-            $str .= "<span class=\"active first\">首页</span>";
-        } else{
-            $str .= "<a href=\"" . $this->__url(1) . "\">首页</a>";
+        
+        if ($this->__currentPage > 1){
+           $str .= "<a href=\"" . $this->__url(1) . "\"><em>首页</em></a>"; 
         }
 
         for ($i = $this->__startNum; $i <= $this->__endNum; $i++){
             if ($i == $this->__currentPage){
-                $str .= "<span class=\"active\">" . $i . "</span>";
+                $str .= "<span class=\"active\"><em>" . $i . "</em></span>";
             } else{
-                $str .= "<a href=\"" . $this->__url($i) . "\">" . $i . "</a>";
+                $str .= "<a href=\"" . $this->__url($i) . "\"><em>" . $i . "</em></a>";
             }
         }
-
+        
+        if($this->__currentPage < $this->__totalPage &&   $this->__totalPage > 1){
+            $str .= "<a href=\"" . $this->__url($this->__currentPage + 1) . "\"><em>下一页</em></a>";
+        }
+        
         if ($this->__currentPage == $this->__totalPage){
-            $str .= "<span class=\"active last\">末页</span>";
+            $str .= "<span class=\"active last\"><em>末页</em></span>";
         } else{
-            $str .= "<a href=\"" . $this->__url($this->__totalPage) . "\">末页</a>";
+            $str .= "<a href=\"" . $this->__url($this->__totalPage) . "\"><em>末页</em></a>";
         }
 
         return $str;

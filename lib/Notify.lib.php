@@ -2,11 +2,12 @@
 
 /**
  * 通知消息
+ * 处理消息的类放在   notify 目录   
+ * 命名格式   XxxxNotify.php
  * @author  Dawnc
  * @date    2015-01-09
  */
 class Notify {
-
 
     private static $__notify        = array();
     private static $__isAddShutDown = false;
@@ -14,18 +15,16 @@ class Notify {
 
     /**
      * 
-     * @param type $type        类型  
-     * @param type $action      动作 如 delete modify 
+     * @param type $name        消息名称  
      * @param type $message     消息 id 或者字符串
      */
-    public static function add($type, $action, $message) {
+    public static function add($name, $message) {
 
         self::__addShutdown();
 
         self::$__notify[] = array(
-            "type"    => $type,
+            "name"    => $name,
             "message" => $message,
-            "action"  => $action,
         );
     }
 
@@ -40,26 +39,20 @@ class Notify {
      * 执行通知
      */
     public static function run() {
-
-        foreach (self::$__notify as $notify) {
-
-            $name = $notify['type'] . "Notify";
-
-            //加载通知处理类
-            $file = CORE_PATH . "libs/nofity/$name.php";
-            
-            if (!isset(self::$__runClass[$name]) && is_file($file)) {
-                
-                include $file;
-                
-                if (class_exists($name)) {
-                    self::$__runClass[$name] = new $name();
-                }
+        
+        if(!self::$__runClass){
+            //读取目录
+            $files = glob(CORE_PATH . "lib/notify/*Notify.php", GLOB_NOCHECK);
+            foreach ($files as $f) {
+                $name = basename($f, ".php");
+                include $f;
+                self::$__runClass[$name] = new $name();
             }
-            
-            //处理通知
-            if(isset(self::$__runClass[$name]) && is_callable(array(self::$__runClass[$name], $notify['action']))){
-                call_user_func(array(self::$__runClass[$name], $notify['action']), $notify['message']);
+        }
+        
+        foreach (self::$__runClass as $cls) {
+            foreach (self::$__notify as $notify) {
+                $cls->notify($notify['name'], $notify['message']);
             }
         }
     }

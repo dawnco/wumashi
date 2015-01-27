@@ -89,7 +89,11 @@ class CacheStorageRedis{
     }
     
     public function set($key, $value, $expire){
-        return $this->__redis->setex($key, $expire, $value);
+        if($expire){
+            return $this->__redis->setex($key, $expire, $value);
+        }else{
+            return $this->__redis->set($key, $expire);
+        }
     }
     
     public function get($key){
@@ -132,7 +136,7 @@ class CacheStorageMemcache{
     }
     
     public function set($key, $value, $expire){
-        return $this->__memcache->set($key, $value, MEMCACHE_COMPRESSED, $expire);
+        return $this->__memcache->set($key, $value, MEMCACHE_COMPRESSED, $expire ? $expire : 3600 * 24);
     }
     
     public function delete($key){

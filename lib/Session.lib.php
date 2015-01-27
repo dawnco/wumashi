@@ -78,11 +78,12 @@ abstract class SessionAbstract {
         $this->open($conf);
         
         $data = $this->read($this->_prefix . $this->_sid);
-        if($data){
-            $this->_data = unserialize($data);
-        }else{
+        
+        if($data === false){
             //没有数据新建一个 SID
             $this->sid(true);
+        }else{
+            $this->_data = $data ? @unserialize($data) : array();
         }
    
         register_shutdown_function(array($this, "save"));
@@ -136,7 +137,12 @@ abstract class SessionAbstract {
     }
 
     public function set($key, $val) {
-        $this->_data[$key] = $val;
+        
+        if($val === null){
+            unset($this->_data[$key]);
+        }else{
+            $this->_data[$key] = $val;
+        }
     }
 
     public function delete($key){
@@ -192,7 +198,7 @@ class SessionDefault extends SessionAbstract {
     
     
     public function read($session_id) {
-         return empty($_SESSION) ? false : true;
+         return $_SESSION === null ? false : true;
     }
 
     public function write($session_id, $session_data) {
@@ -279,6 +285,7 @@ class SessionRedis extends SessionAbstract {
             $data = $this->_handle->get($session_id);
         }catch(Exception $e){
             trigger_error("can't connect redis", E_USER_ERROR);
+            return false;
         }
         return $data;
     }
