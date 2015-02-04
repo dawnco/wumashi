@@ -8,8 +8,10 @@
 class Tree {
     
     
-    private $__data      = null; //原始格式化好的数据
-    private $__tree      = null; //普通树
+    /** 原始格式化好的数据 */
+    private $__data      = null;
+    /** 普通树 */
+    private $__tree      = null;
     
     private $__parentIds = array(); //父节点ID
     private $__childIds  = array(); //子节点ID
@@ -44,7 +46,7 @@ class Tree {
     public function getChildIds($id = 0, $include = true) {
         
         $this->__childIds = array();
-        $child = $this->getChild($id);
+        $child = $this->getChilds($id);
         $this->__findChildId($child);
         
         $return = $this->__childIds;
@@ -112,6 +114,23 @@ class Tree {
         $this->__parentIds = array();
         $this->__findParentIds($id);
         return array_reverse($this->__parentIds);
+    }
+    
+    /**
+     * 获取父类节点
+     * @param type $id
+     */
+    public function getParents($id) {
+        $ids = $this->getParentIds($id);
+        $data = $this->__data;
+        $nodes = array();
+   
+        foreach($ids as $id){
+            if(isset($data[$id])){
+                $nodes[] = $data[$id];
+            }
+        }
+        return $nodes;
     }
     /**
      * 找到 id 节点下的树
@@ -212,8 +231,8 @@ class Tree {
     private function __findChildId($child){
         foreach ($child as $vo){
             $this->__childIds[] = $vo['id'];
-            if(isset($child['child'])){
-                $this->__findChildId($child['child']);
+            if(isset($vo['child'])){
+                $this->__findChildId($vo['child']);
             }
         }
     }

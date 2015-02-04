@@ -17,14 +17,16 @@ class Notify {
      * 
      * @param type $name        消息名称  
      * @param type $message     消息 id 或者字符串
+     * @param type $who         调试用 查看是那个调用的
      */
-    public static function add($name, $message) {
+    public static function add($name, $message = array(), $who = null) {
 
         self::__addShutdown();
 
         self::$__notify[] = array(
             "name"    => $name,
             "message" => $message,
+            "who"     => $who, 
         );
     }
 
@@ -35,20 +37,30 @@ class Notify {
         }
     }
 
+    
+    private static function __loadClass(){
+        if(!self::$__runClass){
+            //读取目录
+       
+            $files = array_merge(glob(APP_PATH . "lib/notify/*Notify.php"), glob(CORE_PATH . "lib/notify/*Notify.php"));
+            
+            
+            foreach ($files as $f) {
+                $name = basename($f, ".php");
+                if(!isset(self::$__runClass[$name])){
+                    include $f;
+                    self::$__runClass[$name] = new $name();
+                }
+            }
+        }
+    }
+    
     /**
      * 执行通知
      */
     public static function run() {
         
-        if(!self::$__runClass){
-            //读取目录
-            $files = glob(CORE_PATH . "lib/notify/*Notify.php", GLOB_NOCHECK);
-            foreach ($files as $f) {
-                $name = basename($f, ".php");
-                include $f;
-                self::$__runClass[$name] = new $name();
-            }
-        }
+        self::__loadClass();
         
         foreach (self::$__runClass as $cls) {
             foreach (self::$__notify as $notify) {

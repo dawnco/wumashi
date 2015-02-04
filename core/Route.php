@@ -48,12 +48,7 @@ class Route{
         }
 
         if (!$routed){
-
-            if (ENV == 'development'){
-                show_404("not route" . var_export($this, true));
-            } else{
-                show_404("not route");
-            }
+            show_404("not route for uri : " . site_url($this->__uri));
         }
 
         //默认路由

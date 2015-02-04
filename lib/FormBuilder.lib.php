@@ -16,6 +16,12 @@ class FormBuilder {
      * @return string
      */
     public static function select($data, $name, $select = "", $opts = array()) {
+        
+        
+        if(!$select){
+            $select = input($name);
+        }
+        
         $html = "<select name=\"{$name}\"";
 
         //占位符
@@ -25,7 +31,7 @@ class FormBuilder {
         if(count($data) > 1){
             //默认值
             if (empty($opts['default_option'])) {
-                array_unshift($data, array("value" => "", "name" => "--"));
+                array_unshift($data, array("id" => "", "name" => "--"));
                 unset($opts['default_option']);
             } else {
                 array_unshift($data, $opts['default_option']);

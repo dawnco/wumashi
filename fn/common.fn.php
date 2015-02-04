@@ -8,7 +8,7 @@
 /**
  * 
  * @param type $key
- * @param type $val_type
+ * @param type $val_type 转换类型 i 整型  s 字符串  a 数组  默认不转换
  * @return type
  */
 function input($key, $val_type = null) {
@@ -21,7 +21,7 @@ function input($key, $val_type = null) {
             $val = (int) $val;
             break;
         case "s" : 
-            $val = (int) $val;
+            $val = (string) $val;
             break;
         case "a" : 
             $val = (array) $val;
