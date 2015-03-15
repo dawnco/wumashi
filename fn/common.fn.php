@@ -11,30 +11,29 @@
  * @param type $val_type 转换类型 i 整型  s 字符串  a 数组  默认不转换
  * @return type
  */
-function input($key, $val_type = null) {
+function input($key, $val_type = "s") {
     $val = isset($_POST[$key]) ? $_POST[$key] :
             (isset($_GET[$key]) ? $_GET[$key] : false );
-    
-    
-    switch ($val_type){
+
+
+    switch ($val_type) {
+        case "s" :
+            $val = (string) $val;
+            break;
         case "i":
             $val = (int) $val;
             break;
-        case "s" : 
-            $val = (string) $val;
-            break;
-        case "a" : 
+        case "a" :
             $val = (array) $val;
             break;
     }
-    
+
     return $val;
 }
 
 function s_input($key) {
     return strip_tags(urldecode(input($key)));
 }
-
 
 function show_404($str = "") {
 
@@ -51,8 +50,8 @@ function show_404($str = "") {
     exit;
 }
 
-function site_url($uri = "") {
-    return Conf::get('app', 'base_url') . $uri;
+function site_url($uri = "", $param = array()) {
+    return Conf::get('app', 'base_url') . $uri . ($param ? "?" . http_build_query($param) : "");
 }
 
 /**

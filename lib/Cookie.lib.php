@@ -23,7 +23,7 @@ class Cookie {
     }
 
     public static function get($key){
-        return $_COOKIE[$key];
+        return isset($_COOKIE[$key]) ? $_COOKIE[$key] : false;
     }
 
 }

@@ -15,7 +15,7 @@ header("Content-Type: text/html; charset=UTF-8");
 
 switch (ENV) {
     case "development":
-        error_reporting(E_ALL);
+        error_reporting(E_ALL ^E_NOTICE);
         break;
     case "testing":
         error_reporting(E_ALL);

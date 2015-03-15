@@ -184,7 +184,7 @@ class Mysql extends Db{
                 array_push($delete_where, sprintf('`%s` = "%s"', $field, $this->escape($value)));
             }
             $delete_where = 'WHERE ' . implode(' AND ', $delete_where);
-        } elseif ($where){
+        } else {
             $delete_where = 'WHERE ' . $this->prepare("id = ?i", $where);
         }
 

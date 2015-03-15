@@ -64,7 +64,7 @@ class Notify {
         
         foreach (self::$__runClass as $cls) {
             foreach (self::$__notify as $notify) {
-                $cls->notify($notify['name'], $notify['message']);
+                $cls->notify($notify['name'], $notify['message'], $notify['who']);
             }
         }
     }

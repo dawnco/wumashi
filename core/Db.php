@@ -9,23 +9,24 @@
 abstract class Db {
 
     private static $__instance = null;
-    
+
     /**
      *
      * @var 执行过的sql 
      */
-    public $sql     = null;
+    public $sql = null;
+
     /**
      * 获取Db实例
      * @param type $conf 配置名
      * @param type $type 数据库类型
      * @return Db
      */
-    public static function getInstance($conf = "default"){
-        
+    public static function getInstance($conf = "default") {
+
         if (!isset(self::$__instance[$conf])) {
-            $option = Conf::get("db", $conf);
-            $type   = isset($option['driver']) ?  $option['driver'] : "Mysql";
+            $option                  = Conf::get("db", $conf);
+            $type                    = isset($option['driver']) ? $option['driver'] : "Mysql";
             self::$__instance[$conf] = new $type($option);
         }
         return self::$__instance[$conf];
@@ -36,70 +37,70 @@ abstract class Db {
      * @param string $conf
      * @param string $type
      */
-    public static function shut($conf = "default"){
+    public static function shut($conf = "default") {
         if (isset(self::$__instance[$conf])) {
             self::$__instance[$conf]->close();
             self::$__instance[$conf] = null;
         }
     }
-    
+
     public function debug() {
         echo "<pre>";
         var_dump($this->sql);
     }
-    
+
     /**
-    * 根据条件拼接sql where片段
-    * 主要解决前台可选一项或多项条件进行查询时的sql拼接
-    * 
-    * 拼接规则：
-    * 's'=>sql，必须，sql片段
-    * 'v'=>值缩写，必须，sql片段中要填充的值
-    * 'c'=>条件，选填，默认判断不为空，如果设置了条件则用所设置的条件
-    * 
-    * $factor_list = array(
-    * 		array('s'=>'and a.id=?i', 'v'=>12 ),
-    * 		array('s'=>"and a.name like '%?p'", 'v'=>'xing'),
-    * 		array('s'=>'and a.age > ?i', 'v'=>18),
-    * 		array('s'=>'or (a.time > ?s and a.time < ?s )', 'v'=>array('2014', '2015'), 'c'=>(1==1) )
-    * );
-    * @param array $factor_list
-    */
+     * 根据条件拼接sql where片段
+     * 主要解决前台可选一项或多项条件进行查询时的sql拼接
+     * 
+     * 拼接规则：
+     * 's'=>sql，必须，sql片段
+     * 'v'=>值缩写，必须，sql片段中要填充的值
+     * 'c'=>条件，选填，默认判断不为空，如果设置了条件则用所设置的条件
+     * 
+     * $factor_list = array(
+     * 		array('s'=>'and a.id=?i', 'v'=>12 ),
+     * 		array('s'=>"and a.name like '%?p'", 'v'=>'xing'),
+     * 		array('s'=>'and a.age > ?i', 'v'=>18),
+     * 		array('s'=>'or (a.time > ?s and a.time < ?s )', 'v'=>array('2014', '2015'), 'c'=>(1==1) )
+     * );
+     * @param array $factor_list
+     */
     public function where($factor_list) {
         $where_sql = ' 1=1';
         foreach ($factor_list as $factor) {
             // 如果用户没有设置条件，默认条件为填充值不能为空
             // 如果用户设置了条件，则使用用户所设置的条件
             $condition = isset($factor['c']) ? $factor['c'] : !empty($factor['v']);
-            
+
             if ($condition) {
                 $where_sql .= " " . $this->prepare($factor['s'], $factor['v']);
             }
         }
         return $where_sql;
     }
-    
-        /**
+
+    /**
      * 预编译sql语句 ?i 表示int ?s 字符串 ?p 原始sql
      * @param string $query
      * @param array string $data
      * @return type
      */
-    public function prepare($query, $data = null){
-        if($data === null){
+    public function prepare($query, $data = null) {
+        if ($data === null) {
             return $query;
-        }elseif (!is_array($data)){
+        } elseif (!is_array($data)) {
             $data  = func_get_args();
             $query = array_shift($data);
         }
 
-        $query = str_replace(array('%', '?i', '?s', '?p'), array( '%%', '%d', '"%s"', '%s'), $query);
-        foreach ($data as $k => $v){
+        $query = str_replace(array('%', '?i', '?s', '?p'), array('%%', '%d', '"%s"', '%s'), $query);
+        foreach ($data as $k => $v) {
             $data[$k] = $this->escape($v);
         }
         return vsprintf($query, $data);
     }
-    
+
     /**
      * 获取一个值
      * @param type $query
@@ -107,7 +108,7 @@ abstract class Db {
      */
     abstract function getVar($query, $bind = null);
 
-     /**
+    /**
      * 获取一行数据
      * @param type $query
      * @param array $bind 预定义参数
@@ -132,12 +133,19 @@ abstract class Db {
     abstract function getLineBy($table, $value, $index = "id", $field = "*");
 
     /**
-     * 插入sql
+     * 插入
      * @param string $table
      * @param array $data
      * @return type
      */
     abstract function insert($table, $data);
+
+    /**
+     * 批量插入
+     * @param string $table
+     * @param array $data
+     */
+    abstract function insertBatch($table, $data);
 
     /**
      * 更新sql
@@ -161,8 +169,6 @@ abstract class Db {
      * @return type
      */
     abstract function escape($val);
-
-
 
     /**
      * 执行sql

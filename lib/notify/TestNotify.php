@@ -7,7 +7,7 @@
 
 class TestNotify{
     
-    public function notify($name, $message) {
+    public function notify($name, $message, $who = null) {
         
     }
 }

@@ -11,9 +11,9 @@ class Session {
 
     public static function instance($conf) {
         if (self::$_instance == null) {
-            if(isset($conf['storage'])){
+            if (isset($conf['storage'])) {
                 $cls = "Session{$conf['storage']}";
-            }else{
+            } else {
                 $cls = "SessionDefault";
             }
             self::$_instance = new $cls($conf);
@@ -31,21 +31,21 @@ class Session {
     public function delete($key) {
         self::$_instance->delete($key);
     }
-    
+
     public static function destroy() {
         self::$_instance->isDelete = true;
-
     }
 
     public static function sid() {
         return self::$_instance->sid();
     }
+
 }
 
 abstract class SessionAbstract {
 
     //session 数据
-    protected $_data = null;
+    protected $_data   = null;
     //cookie 域名
     protected $_domain = "";
     //session_id cookie 名称
@@ -56,8 +56,7 @@ abstract class SessionAbstract {
     protected $_prefix = "sess_";
     //session_id
     protected $_sid    = "";
-    
-    public $isDelete   = false;
+    public $isDelete = false;
 
     public function __construct($conf) {
 
@@ -76,19 +75,18 @@ abstract class SessionAbstract {
 
         $this->sid();
         $this->open($conf);
-        
+
         $data = $this->read($this->_prefix . $this->_sid);
-        
-        if($data === false){
+
+        if ($data === false) {
             //没有数据新建一个 SID
             $this->sid(true);
-        }else{
+        } else {
             $this->_data = $data ? @unserialize($data) : array();
         }
-   
+
         register_shutdown_function(array($this, "save"));
         register_shutdown_function(array($this, "close"));
-      
     }
 
     public function save() {
@@ -104,7 +102,7 @@ abstract class SessionAbstract {
 
         $sid = isset($_GET[$this->_name]) ?
                 $_GET[$this->_name] :
-                    (isset($_COOKIE[$this->_name]) ? $_COOKIE[$this->_name] : "");
+                (isset($_COOKIE[$this->_name]) ? $_COOKIE[$this->_name] : "");
 
         if ($new || !$sid || strlen($sid) < 32) {
             $str = '';
@@ -116,19 +114,19 @@ abstract class SessionAbstract {
         }
 
         $this->_sid = preg_replace("/[^0-9a-zA-Z]/", "", $sid);
-        
-        $params = array();
+
+        $params   = array();
         $params[] = $this->_name;
         $params[] = $this->_sid;
         $params[] = time() + $this->_expire;
         $params[] = "/";
-        if($this->_domain){
+        if ($this->_domain) {
             $params[] = $this->_domain;
         }
         call_user_func_array("setcookie", $params);
-   
+
         $_COOKIE[$this->_name] = $sid;
-        
+
         return $this->_sid;
     }
 
@@ -137,24 +135,27 @@ abstract class SessionAbstract {
     }
 
     public function set($key, $val) {
-        
-        if($val === null){
+
+        if ($val === null) {
             unset($this->_data[$key]);
-        }else{
+        } else {
             $this->_data[$key] = $val;
         }
     }
 
-    public function delete($key){
+    public function delete($key) {
         unset($this->_data[$key]);
     }
-    
+
     abstract function open($conf);
+
     abstract function read($session_id);
-    abstract function write($session_id, $session_data) ;
-    abstract function close() ;
+
+    abstract function write($session_id, $session_data);
+
+    abstract function close();
+
     abstract function destroy($session_id);
-    
 }
 
 /**
@@ -163,19 +164,19 @@ abstract class SessionAbstract {
 class SessionDefault extends SessionAbstract {
 
     public function close() {
-       
+        
     }
-    
+
     public function get($key) {
-      
+
         return isset($_SESSION[$key]) ? $_SESSION[$key] : false;
     }
-    
+
     public function set($key, $value) {
         $_SESSION[$key] = $value;
     }
-    
-    public function delete($key){
+
+    public function delete($key) {
         unset($_SESSION[$key]);
     }
 
@@ -191,22 +192,22 @@ class SessionDefault extends SessionAbstract {
         session_name($this->_name);
         session_id($this->_sid);
         //设置 session cookie 参数
-        session_set_cookie_params(0, "/",  $this->_domain);
+        session_set_cookie_params(0, "/", $this->_domain);
         session_start();
     }
-    
-    
-    
+
     public function read($session_id) {
-         return $_SESSION === null ? false : true;
+        return $_SESSION === null ? false : true;
     }
 
     public function write($session_id, $session_data) {
         
     }
-    
+
     public function save() {
-        
+        if ($this->isDelete) {
+            $_SESSION = array();
+        }
     }
 
 }
@@ -229,8 +230,8 @@ class SessionMemcache extends SessionAbstract {
 
     public function open($conf) {
         $this->_handle = new Memcache();
-        $result = $this->_handle->connect($conf['host'], $conf['port']);
-        if(!$result){
+        $result        = $this->_handle->connect($conf['host'], $conf['port']);
+        if (!$result) {
             trigger_error("can't connect memcache ", E_USER_ERROR);
         }
     }
@@ -240,15 +241,12 @@ class SessionMemcache extends SessionAbstract {
     }
 
     public function write($session_id, $session_data) {
-        
-        if($this->isDelete){
+
+        if ($this->isDelete) {
             $this->_handle->delete($session_id);
-        }else{
+        } else {
             $this->_handle->set($session_id, $session_data, MEMCACHE_COMPRESSED, $this->_expire);
         }
-        
-        
-        
     }
 
 }
@@ -262,9 +260,8 @@ class SessionRedis extends SessionAbstract {
     }
 
     public function destroy($session_id) {
-  
+
         $this->_handle->delete($session_id);
-       
     }
 
     public function gc($maxlifetime) {
@@ -272,18 +269,18 @@ class SessionRedis extends SessionAbstract {
     }
 
     public function open($conf) {
-        try{
+        try {
             $this->_handle = new Redis();
             $this->_handle->connect($conf['host'], $conf['port']);
-        }catch(Exception $e){
+        } catch (Exception $e) {
             trigger_error("can't connect redis", E_USER_ERROR);
         }
     }
 
     public function read($session_id) {
-        try{
+        try {
             $data = $this->_handle->get($session_id);
-        }catch(Exception $e){
+        } catch (Exception $e) {
             trigger_error("can't connect redis", E_USER_ERROR);
             return false;
         }
@@ -291,9 +288,9 @@ class SessionRedis extends SessionAbstract {
     }
 
     public function write($session_id, $session_data) {
-        if($this->isDelete){
+        if ($this->isDelete) {
             $this->_handle->delete($session_id);
-        }else{
+        } else {
             $this->_handle->setex($session_id, $this->_expire, $session_data);
         }
     }
