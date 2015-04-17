@@ -1,5 +1,7 @@
 <?php
 
+namespace wumashi\core;
+
 /**
  * 数据库抽象类
  * 扩展数据库继承该类

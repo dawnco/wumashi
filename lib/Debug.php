@@ -1,5 +1,7 @@
 <?php
 
+namespace wumashi\lib;
+
 /**
  * 调试错误信息
  * @author  Dawnc
@@ -7,12 +9,20 @@
  */
 class Debug {
 
+
     /**
      * 写日志
      * @param type $msg
      * @return boolean
      */
     public static function writeLog($msg) {
+        
+        if(ENV == "development"){
+            echo "<pre>\n";
+            echo $msg;
+            echo "\n</pre>";
+        }
+        
         $log_file = ROOT . "data/log_error.log";
         if (!$fp       = @fopen($log_file, 'a')) {
             return false;
@@ -52,8 +62,8 @@ class Debug {
      * 启动自定义错误调试
      */
     public static function start() {
-        set_error_handler(array("Debug", "handler"));
-        register_shutdown_function(array("Debug", "shutDownError"));
+        set_error_handler(array("\\wumashi\\lib\\Debug", "handler"));
+        register_shutdown_function(array("\\wumashi\\lib\\Debug", "shutDownError"));
     }
 
     /**

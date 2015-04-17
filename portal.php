@@ -5,8 +5,14 @@
  * @author Dawnc <abke@qq.com>
  * @date 2013-11-30
  */
+use wumashi\core\Registry;
+use wumashi\core\Request;
+use wumashi\core\Route;
+use wumashi\core\Dispatcher;
 
-if (!defined('ENV')) {exit('No direct script access allowed');}
+if (!defined('ENV')) {
+    exit('No direct script access allowed');
+}
 
 // 设置时区（中国）
 date_default_timezone_set('PRC');
@@ -15,7 +21,7 @@ header("Content-Type: text/html; charset=UTF-8");
 
 switch (ENV) {
     case "development":
-        error_reporting(E_ALL ^E_NOTICE);
+        error_reporting(E_ALL ^ E_NOTICE);
         break;
     case "testing":
         error_reporting(E_ALL);
@@ -26,36 +32,22 @@ switch (ENV) {
         break;
 }
 
- if(!defined('CORE_PATH')){
-	define("CORE_PATH", dirname(__FILE__) . "/");
- }
-
- if(!defined('ROOT')){
-	define("ROOT", dirname(dirname(__FILE__)). "/");
- }
-
- 
-require CORE_PATH . "conf/const.conf.php";
-require CORE_PATH . "fn/autoload.fn.php";
-require CORE_PATH . "fn/common.fn.php";
-require CORE_PATH . "fn/app.fn.php";
-require CORE_PATH . "fn/transcribe.fn.php";
-require CORE_PATH . "core/Conf.php";
-require CORE_PATH . "core/Registry.php";
-require CORE_PATH . "core/Route.php";
-require CORE_PATH . "core/Dispatcher.php";
-require CORE_PATH . "core/Request.php";
-require CORE_PATH . "core/View.php";
-require CORE_PATH . "core/Hook.php";
-require CORE_PATH . "core/Control.php";
-require CORE_PATH . "core/Db.php";
-
-include APP_PATH  . "conf/const.conf.php";
-include APP_PATH .  "fn/app.fn.php";
-
-if(Conf::get("app", "session_autostart") !== false){
-    Session::instance(Conf::get("session"));
+if (!defined('CORE_PATH')) {
+    define("CORE_PATH", dirname(__FILE__) . DIRECTORY_SEPARATOR);
 }
+
+if (!defined('ROOT')) {
+    define("ROOT", dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR);
+}
+
+if (!defined('APP_PATH')) {
+    define("APP_PATH", ROOT . APP_NAME . DIRECTORY_SEPARATOR);
+}
+
+
+require CORE_PATH . "run/init.php";
+require CORE_PATH . "run/compatible.php";
+require APP_PATH  . "init.php";
 
 
 Registry::add("request", new Request(new Route()));

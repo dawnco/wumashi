@@ -1,5 +1,7 @@
 <?php
 
+namespace wumashi\core;
+
 /**
  *
  * @author Dawnc <abke@qq.com>

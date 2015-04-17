@@ -1,5 +1,9 @@
 <?php
 
+namespace wumashi\lib;
+
+use wumashi\core\Db;
+
 /**
  * Mysql Database Handle 快捷插入和更新
  * @author Dawnc

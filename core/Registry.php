@@ -1,5 +1,7 @@
 <?php
 
+namespace wumashi\core;
+
 /**
  * 注册器
  * @author  Dawnc

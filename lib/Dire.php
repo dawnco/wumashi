@@ -1,11 +1,13 @@
 <?php
 
+namespace wumashi\lib;
+
 /**
  * 目录操作类
  * @author  Dawnc
  * @date    2014-06-24
  */
-class Dire {
+class Dir {
     
     /**
      * 读取目录下的文件

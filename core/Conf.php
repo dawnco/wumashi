@@ -1,5 +1,6 @@
 <?php
 
+namespace wumashi\core;
 /**
  *
  * @author 五马石
@@ -10,12 +11,15 @@ class Conf{
     private static $__data  = array();
 
     /**
-     * 获取配置
+     * 获取配置, 先获取五马石下的配置 在获取 app下的配置 
      * @param type $name
      * @param type... $name
      * @return type
      */
     public static function get($name){
+        
+        //过滤文件名
+        $name = preg_replace("/[^0-1a-zA-Z]/", "", $name);
         
         if (!isset(self::$__files[$name])){
             

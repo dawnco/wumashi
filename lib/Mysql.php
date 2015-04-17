@@ -1,11 +1,14 @@
 <?php
 
+namespace wumashi\lib;
+
+use wumashi\core\Db;
 /**
- * mysqli 数据库
+ *
  * @author Dawnc
- * @date   2014-06-09
+ * @date   2014-04-13
  */
-class Mysqlim extends Db{
+class Mysql extends Db{
 
 //    private static $__instance  = null;
 
@@ -22,15 +25,14 @@ class Mysqlim extends Db{
         $database = $conf['database'];
         $charset  = $conf['charset'];
 
-        $this->__link = new mysqli($hostname, $username, $password, $database, $port);
+        $this->__link = mysql_connect($hostname . ":" . $port, $username, $password, true);
 
-        if ($this->__link->connect_error){
+        if (!$this->__link){
             trigger_error("can't connect mysql $hostname", E_USER_ERROR);
         }
 
-        if (!$this->__link->set_charset($charset)){
-            trigger_error("error set chartset $charset", E_USER_ERROR);
-        }
+        $this->__exec("SET names $charset", $this->__link);
+        mysql_select_db($database, $this->__link);
     }
 
     /**
@@ -47,10 +49,8 @@ class Mysqlim extends Db{
         if (!$result){
             return false;
         }
-        $row = $result->fetch_assoc();
-        $result->free();
 
-        return $row;
+        return mysql_fetch_assoc($result);
     }
 
     /**
@@ -91,12 +91,10 @@ class Mysqlim extends Db{
         if (!$result){
             return $data;
         }
-       
-        while ($row = $result->fetch_assoc()){
+
+        while ($row = mysql_fetch_assoc($result)){
             $data[] = $row;
         }
-        $result->free();
-
         return $data;
     }
 
@@ -119,7 +117,7 @@ class Mysqlim extends Db{
         $result        = $this->__exec($query);
 
         if ($result){
-            return $this->__link->insert_id;
+            return mysql_insert_id($this->__link);
         }
 
         return $result;
@@ -203,13 +201,13 @@ class Mysqlim extends Db{
      * @return boolean
      */
     private function __exec($query){
-        $result = $this->__link->query($query);
+        $result = mysql_query($query, $this->__link);
 
         $this->sql[] = $query;
 
         if ($result === false){
-            $this->error = $this->__link->errno . " " . $this->__link->error . " " . $query;
-            trigger_error($this->error, E_USER_ERROR);
+            $this->error = mysql_errno($this->__link) . " " . mysql_error($this->__link) . " " . $query;
+            trigger_error($this->error . " [" . $query . "]");
             return false;
         }
         return $result;
@@ -235,7 +233,7 @@ class Mysqlim extends Db{
      * @return type
      */
     public function escape($val){
-        return $this->__link->real_escape_string($val);
+        return mysql_real_escape_string($val, $this->__link);
     }
 
     /**
@@ -244,7 +242,7 @@ class Mysqlim extends Db{
      * @param string $type
      */
     public function close(){
-        return $this->__link->close();
+        return mysql_close($this->__link);
     }
 
 }

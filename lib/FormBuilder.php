@@ -1,5 +1,7 @@
 <?php
 
+namespace wumashi\lib;
+
 /**
  * 表单 html 代码生成
  * @author  Dawnc

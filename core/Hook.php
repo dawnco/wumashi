@@ -1,5 +1,7 @@
 <?php
 
+namespace wumashi\core;
+
 /**
  * 钩子类
  * 加载钩子和执行钩子
@@ -48,7 +50,7 @@ class Hook{
                 
         foreach ($this->__hooks[$name] as $hook){
 
-            $hook_class_name = $hook['h'] . "Hook";
+            $hook_class_name = $hook['h'];
             $method          = isset($hook['m']) ? $hook['m'] : "hook";
             if (!isset($this->___hook_class[$hook_class_name])){
                 $this->___hook_class[$hook_class_name] = new $hook_class_name();

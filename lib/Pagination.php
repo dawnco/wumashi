@@ -1,5 +1,9 @@
 <?php
 
+namespace wumashi\lib;
+
+use wumashi\core\Registry;
+
 /**
  * 分页类
  * @author: 五马石 <abke@qq.com>
@@ -19,6 +23,7 @@ class Pagination{
     private $__pageVar = "page"; //page 参数变量
     private $__showNum = 10; //显示多少个页码
     private $__pageUrl = null; // 分页url 模板
+    private $__firstPageUrl = ""; //第一页地址
     private $__startNum;
     private $__endNum;
 
@@ -106,7 +111,13 @@ class Pagination{
      * @return type
      */
     private function __url($number){
-        return str_replace($this->__pageTag, $number, $this->__pageUrl);
+        
+        if($number == 1 && $this->__firstPageUrl){
+            //自定义首页地址
+            return $this->__firstPageUrl;
+        }else{
+            return str_replace($this->__pageTag, $number, $this->__pageUrl);
+        }
     }
 
     /**

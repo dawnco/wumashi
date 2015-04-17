@@ -5,6 +5,4 @@
  * @date    2015-01-05
  */
 
-return array(
-    
-);
+return ['version' => "1.2.9"] ;

@@ -1,5 +1,7 @@
 <?php
 
+namespace wumashi\core;
+
 /**
  * @author: 五马石 <abke@qq.com>
  * Time: 2013-8-11
@@ -9,9 +11,6 @@ class Request{
 
     /** 路由 */
     private $__route = null;
-
-    /** 响应的 控制器文件 */
-    private $__controlFile;
 
     /** 控制器 */
     private $__control;
@@ -38,7 +37,6 @@ class Request{
         $this->__route->setUri($this->__uri);
         $this->__route->run();
 
-        $this->__controlFile = $this->__route->getControlFile();
         $this->__control     = $this->__route->getControl();
         $this->__method      = $this->__route->getMethod();
         $this->__param       = $this->__route->getParam();
@@ -63,7 +61,7 @@ class Request{
         }
 
         $this->__uri = trim($uri, " /");
-        $this->__uri = $this->__uri ? $this->__uri : "default";
+        $this->__uri = $this->__uri ? $this->__uri : "protal";
     }
 
     /**
@@ -72,10 +70,6 @@ class Request{
      */
     public function getUri(){
         return $this->__uri;
-    }
-
-    public function getControlFile(){
-        return $this->__controlFile;
     }
 
     public function getControl(){

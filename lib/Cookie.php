@@ -1,5 +1,7 @@
 <?php
 
+namespace wumashi\lib;
+
 /**
  * @author: 五马石 <abke@qq.com>
  * @link: http://blog.wumashi.com

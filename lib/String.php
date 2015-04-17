@@ -1,5 +1,7 @@
 <?php
 
+namespace wumashi\lib;
+
 /**
  *
  * @author Dawnc

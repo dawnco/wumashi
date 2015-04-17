@@ -1,5 +1,9 @@
 <?php
 
+namespace wumashi\lib;
+
+use wumashi\core\Conf;
+
 /**
  * 通知消息
  * 处理消息的类放在   notify 目录   
@@ -26,45 +30,41 @@ class Notify {
         self::$__notify[] = array(
             "name"    => $name,
             "message" => $message,
-            "who"     => $who, 
+            "who"     => $who,
         );
     }
 
     private static function __addShutdown() {
         if (!self::$__isAddShutDown) {
-            register_shutdown_function(array("Notify", "run"));
+            register_shutdown_function(array(__NAMESPACE__ . "\\Notify", "run"));
             self::$__isAddShutDown = true;
         }
     }
 
-    
-    private static function __loadClass(){
-        if(!self::$__runClass){
-            //读取目录
-       
-            $files = array_merge(glob(APP_PATH . "lib/notify/*Notify.php"), glob(CORE_PATH . "lib/notify/*Notify.php"));
-            
-            
-            foreach ($files as $f) {
-                $name = basename($f, ".php");
-                if(!isset(self::$__runClass[$name])){
-                    include $f;
-                    self::$__runClass[$name] = new $name();
-                }
+    private static function __loadClass() {
+
+        $classes = Conf::get("notify");
+
+        foreach ($classes as $cls) {
+            $cls_name = $cls['c'];
+            if (class_exists($cls_name)) {
+                self::$__runClass[] = new $cls_name();
             }
         }
     }
-    
+
     /**
      * 执行通知
      */
     public static function run() {
-        
+
         self::__loadClass();
-        
+
         foreach (self::$__runClass as $cls) {
             foreach (self::$__notify as $notify) {
-                $cls->notify($notify['name'], $notify['message'], $notify['who']);
+                if(method_exists($cls, "notify")){
+                    $cls->notify($notify['name'], $notify['message'], $notify['who']);
+                }
             }
         }
     }

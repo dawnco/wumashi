@@ -1,11 +1,12 @@
 <?php
 
+namespace wumashi\lib;
 /**
- *
+ * mysqli 数据库
  * @author Dawnc
- * @date   2014-04-13
+ * @date   2014-06-09
  */
-class Mysql extends Db{
+class Mysqli extends \wumashi\core\Db{
 
 //    private static $__instance  = null;
 
@@ -22,14 +23,15 @@ class Mysql extends Db{
         $database = $conf['database'];
         $charset  = $conf['charset'];
 
-        $this->__link = mysql_connect($hostname . ":" . $port, $username, $password, true);
+        $this->__link = new \mysqli($hostname, $username, $password, $database, $port);
 
-        if (!$this->__link){
+        if ($this->__link->connect_error){
             trigger_error("can't connect mysql $hostname", E_USER_ERROR);
         }
 
-        $this->__exec("SET names $charset", $this->__link);
-        mysql_select_db($database, $this->__link);
+        if (!$this->__link->set_charset($charset)){
+            trigger_error("error set chartset $charset", E_USER_ERROR);
+        }
     }
 
     /**
@@ -46,8 +48,10 @@ class Mysql extends Db{
         if (!$result){
             return false;
         }
+        $row = $result->fetch_assoc();
+        $result->free();
 
-        return mysql_fetch_assoc($result);
+        return $row;
     }
 
     /**
@@ -88,10 +92,12 @@ class Mysql extends Db{
         if (!$result){
             return $data;
         }
-
-        while ($row = mysql_fetch_assoc($result)){
+       
+        while ($row = $result->fetch_assoc()){
             $data[] = $row;
         }
+        $result->free();
+
         return $data;
     }
 
@@ -114,10 +120,26 @@ class Mysql extends Db{
         $result        = $this->__exec($query);
 
         if ($result){
-            return mysql_insert_id($this->__link);
+            return $this->__link->insert_id;
         }
 
         return $result;
+    }
+    
+    /**
+     * 更新或者添加一条数据
+     * @param type $table
+     * @param type $data
+     * @param type $value
+     * @param type $field
+     * @return type
+     */
+    public function upsert($table, $data, $value, $field = "id") {
+        if($value && $this->getVar("SELECT id FROM `$table` WHERE `$field` = ?s", $value)){
+            return $this->update($table, $data, array($field => $value));
+        }else{
+            return $this->insert($table, $data);
+        }
     }
 
     /**
@@ -198,13 +220,13 @@ class Mysql extends Db{
      * @return boolean
      */
     private function __exec($query){
-        $result = mysql_query($query, $this->__link);
+        $result = $this->__link->query($query);
 
         $this->sql[] = $query;
 
         if ($result === false){
-            $this->error = mysql_errno($this->__link) . " " . mysql_error($this->__link) . " " . $query;
-            trigger_error($this->error . " [" . $query . "]");
+            $this->error = $this->__link->errno . " " . $this->__link->error . " " . $query;
+            trigger_error($this->error, E_USER_ERROR);
             return false;
         }
         return $result;
@@ -230,7 +252,7 @@ class Mysql extends Db{
      * @return type
      */
     public function escape($val){
-        return mysql_real_escape_string($val, $this->__link);
+        return $this->__link->real_escape_string($val);
     }
 
     /**
@@ -239,7 +261,7 @@ class Mysql extends Db{
      * @param string $type
      */
     public function close(){
-        return mysql_close($this->__link);
+        return $this->__link->close();
     }
 
 }

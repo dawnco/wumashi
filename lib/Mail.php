@@ -1,5 +1,7 @@
 <?php
 
+namespace wumashi\lib;
+
 /**
  * 发邮件类
  * @author: 五马石 <abke@qq.com> 

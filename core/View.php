@@ -1,5 +1,7 @@
 <?php
 
+namespace wumashi\core;
+
 /**
  * @author: 五马石 <abke@qq.com>
  * Time: 2013-8-11

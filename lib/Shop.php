@@ -1,5 +1,10 @@
 <?php
 
+namespace wumashi\lib;
+
+use wumashi\core\Db;
+use wumashi\lib\Cookie;
+
 /**
  * 网店相关
  * @author  Dawnc
@@ -94,7 +99,7 @@ class Shop {
             }
             return $tmp;
         } else {
-            return self::$__orderStatusData[$order_status_id];
+            return isset(self::$__orderStatusData[$order_status_id]) ? self::$__orderStatusData[$order_status_id] : "";
         }
     }
 
