@@ -32,20 +32,33 @@ function s_input($key) {
 
 function show_404($str = "") {
 
-    if (ENV == "development") {
-        $message = $str;
-    } else {
-        $message = "";
-    }
-
     header("HTTP/1.0 404 Not Found");
-    echo $message;
-    echo " Page Not Found";
+    
+    if (ENV == "development") {
+        echo "<hr>";
+        echo $str;
+        echo "<hr>";
+        echo "<pre>";
+        echo var_dump(\wumashi\core\Registry::get("request"));
+        echo "</pre>";
+    } else {
+        echo " Page Not Found";
+    }
+    
     exit;
 }
 
 function site_url($uri = "", $param = array()) {
-    return wumashi\core\Conf::get('app', 'base_url') . $uri . ($param ? "?" . http_build_query($param) : "");
+    
+    $base_url = wumashi\core\Conf::get('app', 'base_url');
+ 
+    if(strpos($base_url, "?")){
+        $sp = "&";
+    }else{
+        $sp = "?";
+    }
+    
+    return $base_url . $uri . ($param ? $sp . http_build_query($param) : "");
 }
 
 /**

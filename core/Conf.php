@@ -25,19 +25,16 @@ class Conf{
             
             self::$__files[$name] = APP_PATH . "conf/{$name}.conf.php";
 
-            if (!is_file(self::$__files[$name])){
-                trigger_error("can't find {$name}.conf.php");
-            }
-            
-            
             $core_conf = CORE_PATH . "conf/{$name}.conf.php";
             if(is_file($core_conf)){
                 $data = include $core_conf;
                 self::set($name, $data, true);
             }
             
-            $data = include self::$__files[$name];
-            self::set($name, $data, true);
+            if(is_file(self::$__files[$name])){
+                $data = include self::$__files[$name];
+                self::set($name, $data, true);
+            }
         }
 
         $args = func_get_args();

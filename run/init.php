@@ -6,8 +6,7 @@
  */
 function __wumashi_autoload($class_name) {
     $class_file = str_replace(array("\\", "/"), DIRECTORY_SEPARATOR, $class_name) . ".php";
-    
-    if(is_file($class_file)){
+    if(is_file( ROOT .$class_file)){
         include ROOT . $class_file;
     }else{
         trigger_error($class_name . " Not Found", E_USER_ERROR);

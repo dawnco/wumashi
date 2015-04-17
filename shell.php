@@ -12,5 +12,6 @@ if (!defined("ROOT")) {
     define("ROOT", dirname(CORE_PATH) . DIRECTORY_SEPARATOR);
 }
 
-require CORE_PATH . "init.php";
+require CORE_PATH . "run/init.php";
+require CORE_PATH . "run/compatible.php";
 require APP_PATH  . "init.php";

@@ -52,6 +52,8 @@ class Request{
             $uri = $this->get['route'];
         } elseif (isset($_SERVER['PATH_INFO'])){
             $uri = $_SERVER['PATH_INFO'];
+        }elseif (isset($_SERVER['HTTP_REQUEST_URI'])){
+            $uri = $_SERVER['HTTP_REQUEST_URI'];
         } elseif (isset($_SERVER['REDIRECT_SCRIPT_URL'])){
             $uri = $_SERVER['REDIRECT_SCRIPT_URL'];
         } elseif (isset($_SERVER['REDIRECT_URL'])){
@@ -59,9 +61,22 @@ class Request{
         } else{
             $uri = "";
         }
-
+        
+        if(!$uri){
+            $uri = "portal";
+        }
+        
+        $uri = trim($uri, " /");
+        
+        //去掉前缀
+        $base_uri = trim(Conf::get("app", "base_uri"), " /");
+        if($base_uri){
+            if(strpos($uri, $base_uri) === 0){
+                $uri = substr($uri, strlen($base_uri));
+            }
+        }
+        
         $this->__uri = trim($uri, " /");
-        $this->__uri = $this->__uri ? $this->__uri : "protal";
     }
 
     /**
