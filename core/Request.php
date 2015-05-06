@@ -61,13 +61,13 @@ class Request{
         } else{
             $uri = "";
         }
-        
+		
+		$uri = trim($uri, " /");
+
         if(!$uri){
             $uri = "portal";
         }
-        
-        $uri = trim($uri, " /");
-        
+
         //去掉前缀
         $base_uri = trim(Conf::get("app", "base_uri"), " /");
         if($base_uri){

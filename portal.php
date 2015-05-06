@@ -32,8 +32,8 @@ switch (ENV) {
         break;
 }
 
-if (!defined('CORE_PATH')) {
-    define("CORE_PATH", dirname(__FILE__) . DIRECTORY_SEPARATOR);
+if (!defined('WUMASHI_PATH')) {
+    define("WUMASHI_PATH", dirname(__FILE__) . DIRECTORY_SEPARATOR);
 }
 
 if (!defined('ROOT')) {
@@ -45,8 +45,8 @@ if (!defined('APP_PATH')) {
 }
 
 
-require CORE_PATH . "run/init.php";
-require CORE_PATH . "run/compatible.php";
+require WUMASHI_PATH . "run/init.php";
+require WUMASHI_PATH . "run/compatible.php";
 require APP_PATH  . "init.php";
 
 

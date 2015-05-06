@@ -25,7 +25,7 @@ class Conf{
             
             self::$__files[$name] = APP_PATH . "conf/{$name}.conf.php";
 
-            $core_conf = CORE_PATH . "conf/{$name}.conf.php";
+            $core_conf = WUMASHI_PATH . "conf/{$name}.conf.php";
             if(is_file($core_conf)){
                 $data = include $core_conf;
                 self::set($name, $data, true);

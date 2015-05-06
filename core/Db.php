@@ -28,7 +28,7 @@ abstract class Db {
 
         if (!isset(self::$__instance[$conf])) {
             $option                  = Conf::get("db", $conf);
-            $type                    = isset($option['driver']) ? $option['driver'] : "Mysql";
+            $type                    = isset($option['driver']) ? $option['driver'] : "\\wumashi\\lib\\Mysql";
             self::$__instance[$conf] = new $type($option);
         }
         return self::$__instance[$conf];
