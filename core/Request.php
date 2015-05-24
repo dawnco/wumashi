@@ -62,11 +62,7 @@ class Request{
             $uri = "";
         }
 		
-		$uri = trim($uri, " /");
-
-        if(!$uri){
-            $uri = "portal";
-        }
+	$uri = trim($uri, " /");
 
         //去掉前缀
         $base_uri = trim(Conf::get("app", "base_uri"), " /");
@@ -74,6 +70,11 @@ class Request{
             if(strpos($uri, $base_uri) === 0){
                 $uri = substr($uri, strlen($base_uri));
             }
+        }
+        
+        //默认路由
+        if(!$uri){
+            $uri = "portal";
         }
         
         $this->__uri = trim($uri, " /");
