@@ -58,7 +58,14 @@ function site_url($uri = "", $param = array()) {
         $sp = "?";
     }
     
-    return $base_url . $uri . ($param ? $sp . http_build_query($param) : "");
+    
+    $qs = "";
+    foreach($param as $k=>$v){
+        $qs .= sprintf("%s=%s&", $k, $v);
+    }
+    $qs = trim($qs, " &");
+    
+    return $base_url . $uri . ($qs ? $sp . $qs : "");
 }
 
 /**

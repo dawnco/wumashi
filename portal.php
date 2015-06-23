@@ -44,6 +44,11 @@ if (!defined('APP_PATH')) {
     define("APP_PATH", ROOT . APP_NAME . DIRECTORY_SEPARATOR);
 }
 
+//第三方库代码
+if (!defined('VENDOR_PATH')) {
+    define("VENDOR_PATH", ROOT . "vendor" . DIRECTORY_SEPARATOR);
+}
+
 
 require WUMASHI_PATH . "run/init.php";
 require WUMASHI_PATH . "run/compatible.php";

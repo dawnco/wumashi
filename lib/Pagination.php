@@ -62,14 +62,14 @@ class Pagination{
     private function __getPageUrl(){
         if ($this->__pageUrl == null){
             $uri          = Registry::get("request")->getUri();
-            $uri          = $uri == "default" ? "" : $uri;
+            $uri          = $uri == "protal" ? "" : $uri;
             $get          = $_GET;
             unset($get[$this->__pageVar]);
-            $query_string = "";
-            foreach ($get as $key => $vo){
-                $query_string .= $key . "=" . $vo . "&";
-            }
-            $this->__pageUrl = site_url($uri) . "?" . $query_string . "page={page}";
+            unset($get["route"]);
+            
+            $get['page'] = "{page}";
+           
+            $this->__pageUrl = site_url($uri, $get);
         }
     }
 

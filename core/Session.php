@@ -39,8 +39,20 @@ class Session {
         self::$_instance->isDelete = true;
     }
 
+    /**
+     * 获得sid
+     * @return type
+     */
     public static function sid() {
         return self::$_instance->sid();
     }
-
+    
+    /**
+     * 获取session name
+     * @return type
+     */
+    public static function sname() {
+        return self::$_instance->getName();
+    }
+    
 }

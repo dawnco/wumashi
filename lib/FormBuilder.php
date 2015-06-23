@@ -11,7 +11,7 @@ class FormBuilder {
 
     /**
      * 
-     * @param type $data //数据 [['name'=>"", "value" => ""]]
+     * @param type $data //数据 [['name'=>"", "id" => ""]]
      * @param type $name select 的名称
      * @param type $select 选中项
      * @param type $opts  array("pad" => "缩进字符", "default_option" => "第一个选项", ...) ... select 其他属性
@@ -89,8 +89,8 @@ class FormBuilder {
         return $html;
     }
     
-    public static function raido($data = array(), $name = "",$checked = array(), $key_value = "id", $key_name = "name") {
-        return self::checkbox($data, $name, $checked, $key_value, $key_name, "radio");
+    public static function raido($data = array(), $name = "",$checked = "", $key_value = "id", $key_name = "name") {
+        return self::checkbox($data, $name, array($checked), $key_value, $key_name, "radio");
     }
     
     

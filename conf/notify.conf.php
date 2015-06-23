@@ -13,8 +13,5 @@ array(
 )
  */
 return array(
-    array(
-        "c" => "wumashi/lib/notify/Admin",
-        "s" => 10,
-    )
+
 );

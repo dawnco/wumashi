@@ -139,4 +139,12 @@ class Upload {
         }
         return true;
     }
+    
+    /**
+     * 获取内容
+     * @return type
+     */
+    public function getContent() {
+        return file_get_contents($this->__UPFILE['tmp_name']);
+    }
 }

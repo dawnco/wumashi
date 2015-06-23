@@ -37,7 +37,7 @@ class Cache {
     }
 
     private function __construct($storage) {
-        $cls = "CacheStorage{$storage}";
+        $cls = "\\wumashi\\lib\\cache\\CacheStorage{$storage}";
         $this->__storage = new $cls();
 
     }

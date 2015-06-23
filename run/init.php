@@ -6,22 +6,22 @@
  */
 //auto load start
 function __wumashi_autoload($class_name) {
-    $class_file = str_replace(array("\\", "/"), DIRECTORY_SEPARATOR, $class_name) . ".php";
-
-    if (is_file(ROOT . $class_file)) {
+    $class_file = str_replace(array("\\", "/"), "/", $class_name) . ".php";
+    if (strpos($class_file, "wumashi") === 0) {
+        //核心文件
+        include WUMASHI_PATH . substr($class_file, 8);
+    } else if (is_file(ROOT . $class_file)) {
         include ROOT . $class_file;
-    } else if (is_file(WUMASHI_PATH . $class_file)) {
-        include WUMASHI_PATH . $class_file;
-    } else if (is_file(ROOT . "vendor/" . $class_file)) {
-        include ROOT . "vendor/" . $class_file;
-    } else {
-        throw new \wumashi\core\Exception($class_name . " Not Found");
-    }
+    } else if (is_file(VENDOR_PATH  . $class_file)) {
+        //第三方库
+        include VENDOR_PATH . $class_file;
+    } 
+    
 }
 
 spl_autoload_register("__wumashi_autoload");
 
-// end  autoload
+// end autoload
 //start custom exception handle
 function __wumashi_exception_handle($exception) {
     if (ENV == "development") {

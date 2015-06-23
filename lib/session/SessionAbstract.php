@@ -46,7 +46,7 @@ abstract class SessionAbstract {
             //没有数据新建一个 SID
             $this->sid(true);
         } else {
-            $this->_data = $data ? @unserialize($data) : array();
+            $this->_data = $data ? json_decode($data, true) : array();
         }
 
         register_shutdown_function(array($this, "save"));
@@ -54,7 +54,7 @@ abstract class SessionAbstract {
     }
 
     public function save() {
-        $this->write($this->_prefix . $this->_sid, serialize($this->_data));
+        $this->write($this->_prefix . $this->_sid, json_encode($this->_data));
     }
 
     /**
@@ -89,11 +89,15 @@ abstract class SessionAbstract {
         }
         call_user_func_array("setcookie", $params);
 
-        $_COOKIE[$this->_name] = $sid;
+        $_COOKIE[$this->_name] = $this->_sid;
 
         return $this->_sid;
     }
 
+    public function getName() {
+        return $this->_name;
+    }
+    
     public function get($key) {
         return isset($this->_data[$key]) ? $this->_data[$key] : false;
     }
