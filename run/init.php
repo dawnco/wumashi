@@ -10,6 +10,9 @@ function __wumashi_autoload($class_name) {
     if (strpos($class_file, "wumashi") === 0) {
         //核心文件
         include WUMASHI_PATH . substr($class_file, 8);
+    }else if (strpos($class_file, APP_NAME . "/") === 0) {
+        //app 文件
+        include APP_PATH . substr($class_file, strlen(APP_NAME) + 1);
     } else if (is_file(ROOT . $class_file)) {
         include ROOT . $class_file;
     } else if (is_file(VENDOR_PATH  . $class_file)) {

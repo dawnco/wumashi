@@ -42,6 +42,11 @@ class Pagination{
 
         $this->__totalPage   = ceil(($this->__total ? $this->__total : 1 ) / $this->__size);
         
+        //最大页数限制
+        if(isset($option['maxPage'])){
+            $this->__totalPage = $this->__totalPage <= $option['maxPage'] ? $this->__totalPage : $option['maxPage'];
+        }
+        
         if($this->__page){
             //指定的页码
             $this->__currentPage = $this->__page;

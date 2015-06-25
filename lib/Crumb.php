@@ -38,7 +38,7 @@ class Crumb {
 
             foreach (self::$__data as $vo) {
                 if ($vo['url']) {
-                    $html[] = "<a target=\"_blank\" href=\"{$vo['url']}\">{$vo['name']}</a>";
+                    $html[] = "<a href=\"{$vo['url']}\">{$vo['name']}</a>";
                 } else {
                     $html[] = "<span>{$vo['name']}</span>";
                 }

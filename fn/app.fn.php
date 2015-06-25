@@ -50,6 +50,10 @@ function show_404($str = "") {
 
 function site_url($uri = "", $param = array()) {
     
+    if(strpos($uri, "http://") === 0){
+         return $uri;
+    }
+    
     $base_url = wumashi\core\Conf::get('app', 'base_url');
  
     if(strpos($base_url, "?")){
