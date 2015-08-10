@@ -26,7 +26,11 @@ class Hook{
      */
     public function load(){
         $hooks = Conf::get("hook");
-
+        
+        if(!$hooks){
+            return false;
+        }
+        
         foreach ($hooks as $preg => $hook){
             if (preg_match("#^$preg$#i", $this->__request->getUri())){
                 $this->__hooks[$hook['weld']][] = $hook;

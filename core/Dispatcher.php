@@ -34,10 +34,10 @@ class Dispatcher{
             if (method_exists($classInstance, $method)){
                 call_user_func_array(array($classInstance, $method), $param);
             } else{
-                show_404($control . "->" . $method . "() Method Not Found");
+                throw new Exception($control . "->" . $method . "() Method Not Found");
             }
         } else{
-            show_404($control . " File Not Found");
+            throw new Exception($control . " File Not Found");
         }
 
         $this->_hook->trigger("after_control");

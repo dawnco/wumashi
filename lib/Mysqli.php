@@ -1,6 +1,8 @@
 <?php
 
 namespace wumashi\lib;
+
+use wumashi\core\Exception;
 /**
  * mysqli 数据库
  * @author Dawnc
@@ -26,11 +28,11 @@ class Mysqli extends \wumashi\core\Db{
         $this->__link = new \mysqli($hostname, $username, $password, $database, $port);
 
         if ($this->__link->connect_error){
-            trigger_error("can't connect mysql $hostname", E_USER_ERROR);
+            throw new Exception("can't connect mysql $hostname");
         }
 
         if (!$this->__link->set_charset($charset)){
-            trigger_error("error set chartset $charset", E_USER_ERROR);
+            throw new Exception("error set chartset $charset");
         }
     }
 
@@ -226,7 +228,7 @@ class Mysqli extends \wumashi\core\Db{
 
         if ($result === false){
             $this->error = $this->__link->errno . " " . $this->__link->error . " " . $query;
-            trigger_error($this->error, E_USER_ERROR);
+            throw new Exception($this->error);
             return false;
         }
         return $result;

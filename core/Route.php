@@ -46,7 +46,7 @@ class Route {
 
 
         if (!$routed) {
-            \show_404("No Route For URI : " . site_url($this->__uri));
+            throw new Exception("No Route For URI : " . site_url($this->__uri));
         }
 
         //默认路由

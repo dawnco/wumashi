@@ -51,7 +51,7 @@ class Conf{
      * 
      * @param type $name
      * @param type $value
-     * @param type $append 合并或者复制
+     * @param type $append true合并  false 赋值
      */
     public static function set($name, $value, $append = false){
         if($append){
