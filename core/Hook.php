@@ -8,68 +8,95 @@ namespace wumashi\core;
  * @author Dawnc <abke@qq.com>
  * @date 2013-11-30
  */
-class Hook{
+class Hook {
 
-    private $__hooks = null, $__request, $___hook_class;
+    private static $__callbacks = [];
 
     /**
-     *
-     * @param Request $request
+     * 
+     * @param type $name
+     * @param type $callback
+     * @param type $seq 按升序
+     * @param type $parameter  
      */
-    public function __construct($request){
-        $this->__request = $request;
+    public static function addAction($name, $callback, $seq = 10, $parameter = []) {
+        self::__setCallbacks("action", $name, [
+            "callback"  => $callback,
+            "seq"       => $seq,
+            "parameter" => $parameter,
+                ]
+        );
     }
 
     /**
-     * 加载钩子
-     * $this->_route->getUri()
+     * 执行action
+     * @param type $name
+     * @param type $parameter
      */
-    public function load(){
-        $hooks = Conf::get("hook");
-        
-        if(!$hooks){
-            return false;
-        }
-        
-        foreach ($hooks as $preg => $hook){
-            if (preg_match("#^$preg$#i", $this->__request->getUri())){
-                $this->__hooks[$hook['weld']][] = $hook;
-            }
+    public static function doAction($name, $parameter = []) {
+        foreach (self::__getCallbacks("action", $name) as $k => $c) {
+            //执行
+            call_user_func_array($c['callback'], array_merge($c['parameter'], $parameter));
         }
     }
 
+    public static function addFilter($name, $callback, $seq = 10, $parameter = []) {
+        self::__setCallbacks("filter", $name, [
+            "callback" => $callback,
+            "seq"      => $seq
+        ]);
+    }
+
     /**
-     * 执行钩子
-     * @param type $name 钩子名称
+     * 执行过滤
+     * @param type $name
+     * @param type $value
+     * @return type
      */
-    public function trigger($name){
+    public static function applyFilter($name, $value, $parameter = []) {
+        foreach (self::__getCallbacks("filter", $name) as $k => $c) {
+            //执行
+            $value = call_user_func_array($c['callback'], array_merge([$value], $parameter));
+        }
+        return $value;
+    }
+
+    private static function __getCallbacks($type, $name) {
 
         //没有钩子返回false
-        if (!isset($this->__hooks[$name])){
-            return false;
+        if (!isset(self::$__callbacks[$type][$name])) {
+            return [];
         }
-        
-        //排序 升序排
-        usort($this->__hooks[$name], array($this, "__sort"));
-                
-        foreach ($this->__hooks[$name] as $hook){
+        $callbacks = self::$__callbacks[$type][$name];
 
-            $hook_class_name = $hook['h'];
-            $method          = isset($hook['m']) ? $hook['m'] : "hook";
-            if (!isset($this->___hook_class[$hook_class_name])){
-                $this->___hook_class[$hook_class_name] = new $hook_class_name();
-            }
-            //执行
-            call_user_func_array(array($this->___hook_class[$hook_class_name], $method), $this->__request->getParam());
-        }
+        usort($callbacks, array(self, "__sort"));
+        return $callbacks;
     }
-    
+
+    private static function __setCallbacks($type, $name, $callbacks) {
+        if (!isset(self::$__callbacks[$type])) {
+            self::$__callbacks[$type] = [];
+        }
+
+        if (!isset(self::$__callbacks[$type][$name])) {
+            self::$__callbacks[$type][$name] = [];
+        }
+
+
+        self::$__callbacks[$type][$name][] = $callbacks;
+    }
+
     /**
-     * 排序
+     * 按升序排列
+     * @param type $a
+     * @param type $b
+     * @return int
      */
-    private function __sort($a, $b) {
-        if ($a['seq'] == $b['seq']) return 0;
-	return $a['seq'] > $b['seq'] ? 1 : -1;	// 按升序排列
+    private static function __sort($a, $b) {
+        if ($a['seq'] == $b['seq']) {
+            return 0;
+        }
+        return $a['seq'] > $b['seq'] ? 1 : -1; // 按升序排列
     }
 
 }

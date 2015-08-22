@@ -1,6 +1,8 @@
 <?php
 
 namespace wumashi\lib\session;
+
+use wumashi\core\Hook;
 /**
  * @author  Dawnc
  * @date    2015-04-01
@@ -49,8 +51,12 @@ abstract class SessionAbstract {
             $this->_data = $data ? json_decode($data, true) : array();
         }
 
-        register_shutdown_function(array($this, "save"));
-        register_shutdown_function(array($this, "close"));
+//        register_shutdown_function(array($this, "save"));
+//        register_shutdown_function(array($this, "close"));
+//        
+        Hook::addAction("shutdown", array($this, "save"), 100);
+        Hook::addAction("shutdown", array($this, "close"), 101);
+        
     }
 
     public function save() {

@@ -9,6 +9,8 @@ use wumashi\core\Registry;
 use wumashi\core\Request;
 use wumashi\core\Route;
 use wumashi\core\Dispatcher;
+use wumashi\core\Conf;
+use wumashi\core\Hook;
 
 if (!defined('ENV')) {
     exit('No direct script access allowed');
@@ -52,10 +54,23 @@ if (!defined('VENDOR_PATH')) {
 
 require WUMASHI_PATH . "run/init.php";
 require WUMASHI_PATH . "run/compatible.php";
-require APP_PATH  . "init.php";
+require APP_PATH . "init.php";
 
 
 Registry::add("request", new Request(new Route()));
+
+
+//系统钩子
+$hooks = Conf::get("hook");
+foreach ((array) $hooks as $preg => $hook) {
+    if (preg_match("#^$preg$#i", Registry::get("request")->getUri())) {
+        Hook::addAction($hook['weld'], [new $hook['h'](), isset($hook['m']) ? $hook['m'] : "hook"], $hook['seq'], isset($hook['p']) ? $hook['p'] : [] );
+    }
+}
+
+//注册系统关闭时执行的函数
+register_shutdown_function("\\wumashi\\core\\Hook::doAction", "shutdown");
+
 
 $dispatcher = new Dispatcher(Registry::get("request"));
 $dispatcher->run();

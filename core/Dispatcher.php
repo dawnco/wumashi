@@ -9,13 +9,11 @@ namespace wumashi\core;
  */
 class Dispatcher{
 
-    protected $_request, $_hook;
+    protected $_request;
 
     function __construct(Request $request){
         $this->_request = $request;
 
-        $this->_hook = new Hook($this->_request);
-        $this->_hook->load();
     }
 
     /**
@@ -27,20 +25,21 @@ class Dispatcher{
         $method      = $this->_request->getMethod();
         $param       = $this->_request->getParam();
 
-        $this->_hook->trigger("pre_control");
-        
+        Hook::doAction("pre_control", $param);
+
         if (class_exists($control)){
             $classInstance = new $control();
             if (method_exists($classInstance, $method)){
                 call_user_func_array(array($classInstance, $method), $param);
             } else{
-                throw new Exception($control . "->" . $method . "() Method Not Found");
+                throw new \wumashi\core\Exception($control . "->" . $method . "() Method Not Found", 404);
             }
         } else{
-            throw new Exception($control . " File Not Found");
+            throw new \wumashi\core\Exception($control . " File Not Found", 404);
         }
+        
+        Hook::doAction("after_control", $param);
 
-        $this->_hook->trigger("after_control");
     }
 
 }
