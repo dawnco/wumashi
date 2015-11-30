@@ -2,6 +2,7 @@
 
 namespace wumashi\lib\session;
 
+use wumashi\core\Exception;
 /**
  * @author  Dawnc
  * @date    2015-04-17
@@ -28,16 +29,15 @@ class SessionRedis extends SessionAbstract {
             $this->_handle = new \Redis();
             $this->_handle->connect($conf['host'], $conf['port']);
         } catch (Exception $e) {
-            trigger_error("can't connect redis", E_USER_ERROR);
+            throw new Exception("session can't connect redis");
         }
     }
 
     public function read($session_id) {
         try {
             $data = $this->_handle->get($session_id);
-        } catch (Exception $e) {
-            trigger_error("can't connect redis", E_USER_ERROR);
-            return false;
+        } catch (\Exception $e) {
+            throw new Exception("session can't connect redis");
         }
         return $data;
     }

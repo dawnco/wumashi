@@ -24,3 +24,8 @@ if (!defined('VENDOR_PATH')) {
 require WUMASHI_PATH . "run/init.php";
 require WUMASHI_PATH . "run/compatible.php";
 require APP_PATH  . "init.php";
+
+//注册系统关闭时执行的函数
+register_shutdown_function("\\wumashi\\core\\Hook::doAction", "shutdown");
+//通知回调
+\wumashi\core\Hook::addAction("shutdown", "wumashi\\lib\\Notify::run", 11);

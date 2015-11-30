@@ -16,7 +16,7 @@ function input($key, $val_type = "s") {
             $val = (int) $val;
             break;
         case "a" :
-            $val = (array) $val;
+            $val = $val ? (array) $val : array();
             break;
         default :
             $val = (string) $val;
@@ -45,23 +45,23 @@ function show_404($str = "") {
         echo " Page Not Found";
     }
     
-    exit;
 }
 
-function site_url($uri = "", $param = array()) {
+function site_url($uri = "", $param = array(), $base_url = false) {
     
     if(strpos($uri, "http://") === 0){
          return $uri;
     }
     
-    $base_url = wumashi\core\Conf::get('app', 'base_url');
- 
+    if($base_url == false){
+        $base_url = wumashi\core\Conf::get('app', 'base_url');
+    }
+    
     if(strpos($base_url, "?")){
         $sp = "&";
     }else{
         $sp = "?";
     }
-    
     
     $qs = "";
     foreach($param as $k=>$v){
@@ -70,6 +70,10 @@ function site_url($uri = "", $param = array()) {
     $qs = trim($qs, " &");
     
     return $base_url . $uri . ($qs ? $sp . $qs : "");
+}
+
+function master_site_url($uri = "", $param = array()){
+    return site_url($uri, $param, wumashi\core\Conf::get("app", "master_base_url"));
 }
 
 /**
@@ -139,5 +143,25 @@ function redirect($uri = "", $local = true) {
     } else {
         header("Location: " . $uri);
     }
-    exit;
+}
+
+
+/**
+ *
+ * @param type $message
+ * @param type $status 可选值 "success", "notice", "error", "permission"
+ * @param type $data
+ */
+function ajax($message = "操作成功", $status = AJAX_SUCCESS, $data = null){
+
+    if(!in_array($status, array(AJAX_SUCCESS, AJAX_NOTICE, AJAX_ERROR, AJAX_PERMISSION))){
+        trigger_error("ajax 未知状态");
+    }
+    $out['status']  = $status;
+    $out['message'] = $message;
+    if($data){
+        $out['data']    = $data;
+    }
+    $callback = input("callback");
+    echo $callback ? $callback . "(" . json_encode($out) . ")" : json_encode($out);
 }

@@ -9,20 +9,19 @@ namespace wumashi\lib;
  */
 class Debug {
 
-
     /**
      * 写日志
      * @param type $msg
      * @return boolean
      */
     public static function writeLog($msg) {
-        
-        if(ENV == "development"){
+
+        if (ENV == "development") {
             echo "<pre>\n";
             echo $msg;
             echo "\n</pre>";
         }
-        
+
         $log_file = ROOT . "data/log_error.log";
         if (!$fp       = @fopen($log_file, 'a')) {
             return false;
@@ -40,7 +39,7 @@ class Debug {
         flock($fp, LOCK_UN);
         fclose($fp);
     }
-    
+
     /**
      * 程序结束时获取最近一次致命错误
      */
@@ -101,13 +100,31 @@ class Debug {
 
         return isset($levels[$error_type]) ? $levels[$error_type] : "";
     }
-    
+
     /**
      * 输出变了内容
      * @param type $var 
      * @param type $name 变量名
      */
     public static function dump($var, $name = "") {
-        self::writeLog( $name . "\r\n" . var_export($var, 1));
+        self::writeLog($name . "\r\n" . var_export($var, 1));
     }
+
+    public static function log($message, $who = "") {
+
+        $file     = ROOT . "data/log_info.log";
+        $_message = is_array($message) ? implode("\n", $message) : $message;
+
+        $content = "\n" . date("Y-m-d H:i:s");
+        $content .= "\n" . $who;
+        $content .= "\n" . $_message . "\n";
+
+        //5M
+        if (is_file($file) && filesize($file) < 1024 * 1024 * 5) {
+            file_put_contents($file, $content, FILE_APPEND | LOCK_EX);
+        } else {
+            file_put_contents($file, $content, LOCK_EX);
+        }
+    }
+
 }

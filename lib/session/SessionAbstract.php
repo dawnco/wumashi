@@ -43,23 +43,40 @@ abstract class SessionAbstract {
         $this->open($conf);
 
         $data = $this->read($this->_prefix . $this->_sid);
-
+       
+        
+        
         if ($data === false) {
             //没有数据新建一个 SID
             $this->sid(true);
         } else {
             $this->_data = $data ? json_decode($data, true) : array();
         }
+        
+        //未验证过
+        if(!isset($this->_data['__shash__'])){
+            $this->sid(true);
+            $this->_data = [];
+        }elseif($this->_data['__shash__'] != $this->getHash()){
+            $this->sid(true);
+            $this->_data = [];
+        }
 
 //        register_shutdown_function(array($this, "save"));
 //        register_shutdown_function(array($this, "close"));
 //        
-        Hook::addAction("shutdown", array($this, "save"), 100);
-        Hook::addAction("shutdown", array($this, "close"), 101);
+        Hook::addAction("after_control", array($this, "save"), 100);
+        Hook::addAction("after_control", array($this, "close"), 101);
         
     }
 
     public function save() {
+        //最后修改时间
+        $this->_data['__slast__'] = date("Y-m-d H:i:s");
+        
+        //验证session用
+        $this->_data['__shash__'] = $this->getHash();
+        
         $this->write($this->_prefix . $this->_sid, json_encode($this->_data));
     }
 
@@ -119,6 +136,11 @@ abstract class SessionAbstract {
 
     public function delete($key) {
         unset($this->_data[$key]);
+    }
+    
+    public function getHash() {
+        //双核浏览器切换的时候 $_SERVER['HTTP_USER_AGENT'] 会改变
+        return md5(isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : "");
     }
 
     abstract function open($conf);

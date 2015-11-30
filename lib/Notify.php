@@ -13,9 +13,8 @@ use wumashi\core\Conf;
  */
 class Notify {
 
-    private static $__notify        = array();
-    private static $__isAddShutDown = false;
-    private static $__runClass      = array();
+    private static $__notify   = array();
+    private static $__runClass = array();
 
     /**
      * 
@@ -24,9 +23,6 @@ class Notify {
      * @param type $who         调试用 查看是那个调用的
      */
     public static function add($name, $message = array(), $who = null) {
-
-        self::__addShutdown();
-
         self::$__notify[] = array(
             "name"    => $name,
             "message" => $message,
@@ -34,39 +30,43 @@ class Notify {
         );
     }
 
-    private static function __addShutdown() {
-        if (!self::$__isAddShutDown) {
-            register_shutdown_function(array(__NAMESPACE__ . "\\Notify", "run"));
-            self::$__isAddShutDown = true;
-        }
-    }
-
-    private static function __loadClass() {
-
-        $classes = Conf::get("notify");
-
-        foreach ($classes as $cls) {
-            $cls_name = $cls['c'];
-            if (class_exists($cls_name)) {
-                self::$__runClass[] = new $cls_name();
-            }
-        }
-    }
-
     /**
      * 执行通知
      */
     public static function run() {
 
-        self::__loadClass();
+        $classes = Conf::get("notify");
+        
+        if(!$classes){
+            return false;
+        }
+        
+        foreach ($classes as $cls) {
+            $cls_name = $cls['c'];
+            if (class_exists($cls_name)) {
+                self::$__runClass[] = [
+                    "seq" => isset($cls['s']) ? $cls['s'] : 10,
+                    "cls" => new $cls_name(),
+                ];
+            }
+        }
+
+        usort(self::$__runClass, array(__NAMESPACE__ . "\\Notify", "sort"));
 
         foreach (self::$__runClass as $cls) {
             foreach (self::$__notify as $notify) {
-                if(method_exists($cls, "notify")){
-                    $cls->notify($notify['name'], $notify['message'], $notify['who']);
+                if (method_exists($cls['cls'], "notify")) {
+                    $cls['cls']->notify($notify['name'], $notify['message'], $notify['who']);
                 }
             }
         }
+    }
+
+   public static function sort($a, $b) {
+        if ($a['seq'] == $b['seq']) {
+            return 0;
+        }
+        return $a['seq'] > $b['seq'] ? 1 : -1; // 按升序排列
     }
 
 }

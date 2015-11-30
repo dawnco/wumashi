@@ -52,8 +52,7 @@ spl_autoload_register("__wumashi_autoload");
 //start custom exception handle
 function __wumashi_exception_handler($exception) {
     
-    header("HTTP/1.0 500 Internal Server Error");
-    
+    header("HTTP/1.0 404 Not Found");
     if (ENV == "development") {
         $data['trace']   = $exception->getTraceAsString();
         $data['code']    = $exception->getCode();
@@ -62,8 +61,7 @@ function __wumashi_exception_handler($exception) {
         $data['message'] = $exception->getMessage();
         \wumashi\core\View::render("error", $data);
     } else {
-        echo "System error occurred, ";
-        echo "error code" . $exception->getCode();
+        printf("System error occurred, %s ,%s ",  $exception->getCode(), $exception->getMessage());
     }
 }
 
@@ -73,6 +71,6 @@ set_exception_handler('__wumashi_exception_handler');
 require WUMASHI_PATH . "run/define.php";
 require WUMASHI_PATH . "fn/app.fn.php";
 require WUMASHI_PATH . "fn/transcribe.fn.php";
-
+require WUMASHI_PATH . "fn/common.fn.php";
 
 

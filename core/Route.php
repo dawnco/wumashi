@@ -71,7 +71,7 @@ class Route {
         //合并参数
         $prarm     = array();
         if (isset($rule['p'])) {
-            $prarm = array_merge($url_param, (array) $rule['p']);
+            $prarm = array_merge((array) $rule['p'], $url_param);
         } else {
             $prarm = $url_param;
         }

@@ -10,7 +10,7 @@ namespace wumashi\lib;
 class Upload {
 
     private $__uploadName = "file";
-    private $__allowExt   = "jpg,gif,png";
+    private $__allowExt   = "jpg,gif,png,jpeg";
     private $__maxSize    =  1048576; // 1M
 
     private $__error      = "";

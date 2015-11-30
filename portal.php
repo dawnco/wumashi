@@ -23,7 +23,7 @@ header("Content-Type: text/html; charset=UTF-8");
 
 switch (ENV) {
     case "development":
-        error_reporting(E_ALL ^ E_NOTICE);
+        error_reporting(E_ALL);
         break;
     case "testing":
         error_reporting(E_ALL);
@@ -69,8 +69,9 @@ foreach ((array) $hooks as $preg => $hook) {
 }
 
 //注册系统关闭时执行的函数
-register_shutdown_function("\\wumashi\\core\\Hook::doAction", "shutdown");
-
+//register_shutdown_function("\\wumashi\\core\\Hook::doAction", "shutdown");
+//通知回调
+Hook::addAction("after_control", "\\wumashi\\lib\\Notify::run", 11);
 
 $dispatcher = new Dispatcher(Registry::get("request"));
 $dispatcher->run();

@@ -78,6 +78,10 @@ class View{
        
         $_file = APP_PATH . "view/$tpl.tpl.php";
      
+        if(!is_file($_file)){
+            $_file = WUMASHI_PATH . "view/$tpl.tpl.php";
+        }
+        
         if (self::$__data){
             extract(self::$__data);
         }

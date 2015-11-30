@@ -6,7 +6,7 @@ namespace wumashi\core;
  * 钩子类
  * 加载钩子和执行钩子
  * @author Dawnc <abke@qq.com>
- * @date 2013-11-30
+ * @date 2015-08-30
  */
 class Hook {
 
@@ -14,8 +14,8 @@ class Hook {
 
     /**
      * 
-     * @param type $name
-     * @param type $callback
+     * @param type $name 名称
+     * @param type $callback 
      * @param type $seq 按升序
      * @param type $parameter  
      */
@@ -42,8 +42,9 @@ class Hook {
 
     public static function addFilter($name, $callback, $seq = 10, $parameter = []) {
         self::__setCallbacks("filter", $name, [
-            "callback" => $callback,
-            "seq"      => $seq
+            "callback"  => $callback,
+            "seq"       => $seq,
+            "parameter" => $parameter,
         ]);
     }
 
@@ -56,11 +57,17 @@ class Hook {
     public static function applyFilter($name, $value, $parameter = []) {
         foreach (self::__getCallbacks("filter", $name) as $k => $c) {
             //执行
-            $value = call_user_func_array($c['callback'], array_merge([$value], $parameter));
+            $value = call_user_func_array($c['callback'], array_merge([$value], $c['parameter'], $parameter));
         }
         return $value;
     }
 
+    /**
+     * 
+     * @param type $type
+     * @param type $name
+     * @return type
+     */
     private static function __getCallbacks($type, $name) {
 
         //没有钩子返回false
@@ -69,10 +76,16 @@ class Hook {
         }
         $callbacks = self::$__callbacks[$type][$name];
 
-        usort($callbacks, array(self, "__sort"));
+        usort($callbacks, array(__NAMESPACE__ . "\\Hook", "sort"));
         return $callbacks;
     }
 
+    /**
+     * 
+     * @param type $type
+     * @param type $name
+     * @param type $callbacks
+     */
     private static function __setCallbacks($type, $name, $callbacks) {
         if (!isset(self::$__callbacks[$type])) {
             self::$__callbacks[$type] = [];
@@ -92,7 +105,7 @@ class Hook {
      * @param type $b
      * @return int
      */
-    private static function __sort($a, $b) {
+    public static function sort($a, $b) {
         if ($a['seq'] == $b['seq']) {
             return 0;
         }
