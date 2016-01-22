@@ -139,8 +139,8 @@ abstract class SessionAbstract {
     }
     
     public function getHash() {
-        //双核浏览器切换的时候 $_SERVER['HTTP_USER_AGENT'] 会改变
-        return md5(isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : "");
+        //双核浏览器切换的时候 $_SERVER['HTTP_USER_AGENT'] 使用cdn ip 会改变 会改变
+        return md5("");
     }
 
     abstract function open($conf);

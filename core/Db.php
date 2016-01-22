@@ -179,4 +179,19 @@ abstract class Db {
      * @return boolean
      */
     abstract function exec($query, $bind = null);
+    
+    /**
+     * 开始事物
+     */
+    abstract function begin();
+    
+    /**
+     * 提交
+     */
+    abstract function commit();
+    
+    /**
+     * 回滚
+     */
+    abstract function rollback();
 }

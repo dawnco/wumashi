@@ -38,7 +38,7 @@ class Dispatcher{
             throw new \wumashi\core\Exception($control . " File Not Found", 404);
         }
         
-        Hook::doAction("after_control", $param);
+        Hook::doAction("after_control", array_merge([$classInstance], $param));
 
     }
 

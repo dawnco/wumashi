@@ -53,7 +53,7 @@ class Cache {
      * @param type $expire 过期时间  0 不过期
      */
     public function set($key, $val, $expire = 3600) {
-        $this->__storage->set($this->__key($key), serialize($val), $expire);
+        $this->__storage->set($this->__key($key), json_encode($val), $expire);
     }
 
     /**
@@ -63,7 +63,7 @@ class Cache {
     public function get($key) {
         $data =  $this->__storage->get($this->__key($key));
         if($data){
-            return unserialize($data);
+            return json_decode($data, true);
         }else{
             return false;
         }

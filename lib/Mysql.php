@@ -245,4 +245,16 @@ class Mysql extends Db{
         return mysql_close($this->__link);
     }
 
+    public function begin() {
+        throw new \wumashi\core\Exception("Not Implement");
+    }
+
+    public function rollback() {
+        throw new \wumashi\core\Exception("Not Implement");
+    }
+
+    public function start() {
+        throw new \wumashi\core\Exception("Not Implement");
+    }
+
 }

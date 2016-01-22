@@ -165,3 +165,13 @@ function ajax($message = "操作成功", $status = AJAX_SUCCESS, $data = null){
     $callback = input("callback");
     echo $callback ? $callback . "(" . json_encode($out) . ")" : json_encode($out);
 }
+
+function dump($var, $halt = true){
+    echo "<pre>";
+    var_dump($var);
+    echo "</pre>";
+    
+    if($halt){
+        exit;
+    }
+}

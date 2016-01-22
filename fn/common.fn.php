@@ -12,5 +12,5 @@
  * @return type
  */
 function avatar_url($uid, $type) {
-    return wumashi\core\Conf::get("app", "avatar_base_url") . "?uid=$uid&size=$type";
+    return wumashi\core\Conf::get("app", "avatar_url") . "?uid=$uid&size=$type";
 }
