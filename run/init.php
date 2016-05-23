@@ -52,7 +52,19 @@ spl_autoload_register("__wumashi_autoload");
 //start custom exception handle
 function __wumashi_exception_handler($exception) {
     
-    header("HTTP/1.0 404 Not Found");
+    $http_code = $exception->getCode();
+    if(!in_array($http_code, [404, 500, 502])){
+        $http_code = 404;
+    }
+    
+    $header = [
+        404 => "HTTP/1.0 404 Not Found",
+        500 => "HTTP/1.0 500 Internal Server Error",
+        502 => "HTTP/1.0 502 Bad Gateway",
+    ];
+    
+    header($header[$http_code]);
+    
     if (ENV == "development") {
         $data['trace']   = $exception->getTraceAsString();
         $data['code']    = $exception->getCode();

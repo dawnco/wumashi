@@ -69,6 +69,27 @@ abstract class SessionAbstract {
         Hook::addAction("after_control", array($this, "close"), 101);
         
     }
+    
+    
+    /**
+     * 设置参数
+     * @param type $conf
+     */
+    public function conf($conf) {
+        if (isset($conf['domain'])) {
+            $this->_domain = $conf['domain'];
+        }
+        if (isset($conf['name'])) {
+            $this->_name = $conf['name'];
+        }
+        if (isset($conf['expire'])) {
+            $this->_expire = $conf['expire'];
+        }
+        if (isset($conf['prefix'])) {
+            $this->_prefix = $conf['prefix'];
+        }
+        
+    }
 
     public function save() {
         //最后修改时间

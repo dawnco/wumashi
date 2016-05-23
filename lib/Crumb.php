@@ -46,7 +46,7 @@ class Crumb {
 
 
 
-            $str = '<div class="crumb"><span class="crumb-title">' . $local . "</span>" . implode($sp, $html) . "</div>";
+            $str = '<div class="cur-pos"><span class="crumb-title">' . $local . "</span>" . implode($sp, $html) . "</div>";
         } else {
             $str = "";
         }

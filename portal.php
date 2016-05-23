@@ -23,7 +23,7 @@ header("Content-Type: text/html; charset=UTF-8");
 
 switch (ENV) {
     case "development":
-        error_reporting(E_ALL);
+        error_reporting(E_ALL ^ E_NOTICE);
         break;
     case "testing":
         error_reporting(E_ALL);
@@ -51,6 +51,10 @@ if (!defined('VENDOR_PATH')) {
     define("VENDOR_PATH", ROOT . "vendor" . DIRECTORY_SEPARATOR);
 }
 
+/** 页面请求时间 */
+define("WMS_TIME", time());
+/** 页面请求时间 微秒*/
+define("WMS_TIME_MICRO", microtime(true));
 
 require WUMASHI_PATH . "run/init.php";
 require WUMASHI_PATH . "run/compatible.php";

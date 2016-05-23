@@ -22,6 +22,10 @@ class Session {
             self::$_instance = new $cls($conf);
         }
     }
+    
+    public static function conf($conf) {
+        return self::$_instance->conf($conf);
+    }
 
     public static function get($key) {
         return self::$_instance->get($key);

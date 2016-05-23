@@ -21,6 +21,9 @@ if (!defined('VENDOR_PATH')) {
     define("VENDOR_PATH", ROOT . "vendor" . DIRECTORY_SEPARATOR);
 }
 
+/** 页面请求时间 */
+define("WMS_TIME", time());
+
 require WUMASHI_PATH . "run/init.php";
 require WUMASHI_PATH . "run/compatible.php";
 require APP_PATH  . "init.php";

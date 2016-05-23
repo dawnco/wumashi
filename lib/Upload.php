@@ -89,7 +89,7 @@ class Upload {
         }
 
         //检查扩展名
-        $ext = substr($_FILES_UP1['name'], strrpos($_FILES_UP1['name'], ".") + 1);
+        $ext = strtolower(substr($_FILES_UP1['name'], strrpos($_FILES_UP1['name'], ".") + 1));
 
         $this->__UPFILE['ext']  = $ext;
         $this->__UPFILE['name'] = substr($_FILES_UP1['name'],0 ,strrpos($_FILES_UP1['name'], "."));

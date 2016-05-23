@@ -30,6 +30,14 @@ function s_input($key) {
     return strip_tags(urldecode(input($key)));
 }
 
+/**
+ * 转义输出
+ * @param type $string
+ */
+function secho($string){
+    echo htmlspecialchars($string);
+}
+
 function show_404($str = "") {
 
     header("HTTP/1.0 404 Not Found");
@@ -50,7 +58,8 @@ function show_404($str = "") {
 function site_url($uri = "", $param = array(), $base_url = false) {
     
     if(strpos($uri, "http://") === 0){
-         return $uri;
+         $base_url = $uri;
+         $uri = "";
     }
     
     if($base_url == false){
@@ -65,16 +74,13 @@ function site_url($uri = "", $param = array(), $base_url = false) {
     
     $qs = "";
     foreach($param as $k=>$v){
-        $qs .= sprintf("%s=%s&", $k, $v);
+       $v && $qs .= sprintf("%s=%s&", $k, $v);
     }
     $qs = trim($qs, " &");
     
     return $base_url . $uri . ($qs ? $sp . $qs : "");
 }
 
-function master_site_url($uri = "", $param = array()){
-    return site_url($uri, $param, wumashi\core\Conf::get("app", "master_base_url"));
-}
 
 /**
  * 静态资源

@@ -6,15 +6,15 @@
  * @date    2015-04-09
  */
 
-
-class Conf extends wumashi\core\Conf{
-    
-}
-
-class Session extends wumashi\core\Session{
-    
-}
-
-class Notify  extends wumashi\lib\Notify{
-    
-}
+//
+//class Conf extends wumashi\core\Conf{
+//    
+//}
+//
+//class Session extends wumashi\core\Session{
+//    
+//}
+//
+//class Notify  extends wumashi\lib\Notify{
+//    
+//}

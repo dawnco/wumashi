@@ -32,10 +32,10 @@ class Dispatcher{
             if (method_exists($classInstance, $method)){
                 call_user_func_array(array($classInstance, $method), $param);
             } else{
-                throw new \wumashi\core\Exception($control . "->" . $method . "() Method Not Found", 404);
+                throw new \wumashi\core\Exception($control . "->" . $method . "() Method Not Found", 500);
             }
         } else{
-            throw new \wumashi\core\Exception($control . " File Not Found", 404);
+            throw new \wumashi\core\Exception($control . " File Not Found", 500);
         }
         
         Hook::doAction("after_control", array_merge([$classInstance], $param));

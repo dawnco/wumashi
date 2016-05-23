@@ -2,6 +2,7 @@
 
 namespace wumashi\lib;
 
+use wumashi\core\Conf;
 /**
  *
  * @author  Dawnc
@@ -10,7 +11,7 @@ namespace wumashi\lib;
 class Cache {
 
   
-    private $__keyPrefix = "cache-key-";
+    private $__keyPrefix = "cache-k-";
     private $__storage = null;
     
     
@@ -21,9 +22,14 @@ class Cache {
      * @param type $storage  存储方式  可选址  Memcache Redis
      * @return type
      */
-    public static function getInstance($storage = "Redis") {
+    public static function getInstance($storage = "Redis", $config = "default") {
         if (!isset(self::$__instance[$storage])) {
-            self::$__instance[$storage] = new Cache($storage);
+            
+            $conf = Conf::get("cache", strtolower($storage), $config);
+            
+            self::$__instance[$storage] = new Cache($storage, $conf);
+            self::$__instance[$storage]->setPrefix($conf['prefix']);
+            
         }
         return self::$__instance[$storage];
     }
@@ -36,9 +42,9 @@ class Cache {
         $this->__keyPrefix = $prefix;
     }
 
-    private function __construct($storage) {
+    private function __construct($storage, $config) {
         $cls = "\\wumashi\\lib\\cache\\CacheStorage{$storage}";
-        $this->__storage = new $cls();
+        $this->__storage = new $cls($config);
 
     }
 

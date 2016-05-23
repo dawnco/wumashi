@@ -13,9 +13,8 @@ class CacheStorageRedis{
     
     public $connected   = false;
 
-    public function __construct(){
+    public function __construct($conf){
         $this->__redis = new \Redis();
-        $conf = Conf::get("cache", "redis", "default");
         $this->__redis->connect($conf['host'], $conf['port']);
     }
     
@@ -23,7 +22,7 @@ class CacheStorageRedis{
         if($expire){
             return $this->__redis->setex($key, $expire, $value);
         }else{
-            return $this->__redis->set($key, $expire);
+            return $this->__redis->set($key, $value);
         }
     }
     

@@ -28,11 +28,11 @@ class Mysqli extends \wumashi\core\Db{
         $this->__link = new \mysqli($hostname, $username, $password, $database, $port);
 
         if ($this->__link->connect_error){
-            throw new Exception("can't connect mysql $hostname");
+            throw new Exception("can't connect mysql $hostname", 500);
         }
 
         if (!$this->__link->set_charset($charset)){
-            throw new Exception("error set chartset $charset");
+            throw new Exception("error set chartset $charset", 500);
         }
     }
 
@@ -195,7 +195,7 @@ class Mysqli extends \wumashi\core\Db{
         } elseif (is_numeric($where)){
             $update_where = 'WHERE ' . $this->prepare("id = ?i", $where);
         } else {
-            throw new Exception("Db Not Specified Where");
+            throw new Exception("Db Not Specified Where" , 500);
         }
         $query = "UPDATE `{$table}` SET {$update_data} {$update_where}";
 
@@ -213,7 +213,7 @@ class Mysqli extends \wumashi\core\Db{
         } elseif (is_numeric($where)) {
             $delete_where = 'WHERE ' . $this->prepare("id = ?i", $where);
         } else {
-            throw new Exception("Db Not Specified Where");
+            throw new Exception("Db Not Specified Where", 500);
         }
 
         $query = "DELETE FROM `$table` $delete_where";
@@ -226,16 +226,16 @@ class Mysqli extends \wumashi\core\Db{
      * @return boolean
      */
     private function __exec($query){
+        $start  = microtime(true);
         $result = $this->__link->query($query);
-
-        $this->sql[] = $query;
-
         if ($result === false){
             $error         = sprintf("%s : %s [%s]", $this->__link->errno, $this->__link->error, $query);
             $this->error[] =  $error;
-            throw new Exception($error);
+            throw new Exception($error, 500);
 //            return false;
         }
+        $end     = microtime(true);
+        $this->sql[] = "[" . substr(($end - $start) * 1000, 0, 5) . "ms] " . $query;
         return $result;
     }
 
@@ -274,6 +274,7 @@ class Mysqli extends \wumashi\core\Db{
      * @return type
      */
     public function begin() {
+        $this->sql[] = "begin";
         return $this->__link->autocommit(false);
     }
 
@@ -282,6 +283,7 @@ class Mysqli extends \wumashi\core\Db{
      * @return type
      */
     public function commit() {
+        $this->sql[] = "commit";
         $result = $this->__link->commit();
         $this->__link->autocommit(true);
         return $result;
@@ -292,6 +294,7 @@ class Mysqli extends \wumashi\core\Db{
      * @return type
      */
     public function rollback() {
+        $this->sql[] = "rollback";
         $result = $this->__link->rollback();
         return $result;
     }

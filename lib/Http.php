@@ -88,7 +88,7 @@ class Http {
         } else {
             $url .= "" . $qs;
         }
-        return self::request($url, $data, $opt);
+        return self::request($url, [], $opt);
     }
 
     /**
